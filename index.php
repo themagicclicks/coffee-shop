@@ -6,6 +6,8 @@ loadEnv(__DIR__ . '/.env');
 
 define('BASE', $_ENV['BASE']);
 define('SITE', $_ENV['SITE']);
+
+
 //define("BASE","/home/u804273671/domains/aperiq.in/public_html/fiverr/coffee-shop/");
 //define("SITE","https://aperiq.in/fiverr/coffee-shop/");
 //define("BASE","C:/laragon/www/fiverr/coffee-shop/");
