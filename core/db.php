@@ -1,5 +1,37 @@
 <?php
 
+require_once __DIR__ . '/env.php';
+
+function db_load_env_once() {
+    static $loaded = false;
+
+    if ($loaded) {
+        return;
+    }
+
+    $envPath = dirname(__DIR__) . '/.env';
+    if (is_file($envPath) && is_readable($envPath)) {
+        loadEnv($envPath);
+    }
+
+    $loaded = true;
+}
+
+function db_env_value($key) {
+    db_load_env_once();
+
+    if (array_key_exists($key, $_ENV) && $_ENV[$key] !== '') {
+        return (string) $_ENV[$key];
+    }
+
+    $value = getenv($key);
+    if ($value !== false && $value !== '') {
+        return (string) $value;
+    }
+
+    return '';
+}
+
 function db_bind_params($statement, $types, $values) {
     if ($types === '') {
         return;
@@ -87,16 +119,18 @@ function db_connect($query, $params, $values, $type = 'select') {
         error_log('db_connect failed to initialize mysqli');
         die('Database connection failed.');
     }
-	//Hostinger
-    //if (!$conn->real_connect('localhost', 'eav_cs', 'cs$#2026', 'eav_cs')) {
-    //    error_log('db_connect connection failed: ' . mysqli_connect_error());
-    //    die('Database connection failed.');
-    //}
-	//Laragon local
-	if (!$conn->real_connect($_ENV['DB_HOST'],
-    $_ENV['DB_USER'],
-    $_ENV['DB_PASS'],
-    $_ENV['DB_NAME'])) {
+
+    $dbHost = db_env_value('DB_HOST');
+    $dbUser = db_env_value('DB_USER');
+    $dbPass = db_env_value('DB_PASS');
+    $dbName = db_env_value('DB_NAME');
+
+    if ($dbHost === '' || $dbUser === '' || $dbName === '') {
+        error_log('db_connect missing required database environment variables');
+        die('Database connection failed.');
+    }
+
+	if (!$conn->real_connect($dbHost, $dbUser, $dbPass, $dbName)) {
         error_log('db_connect connection failed: ' . mysqli_connect_error());
         die('Database connection failed.');
     }
