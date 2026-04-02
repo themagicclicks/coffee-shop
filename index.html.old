@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ✅ Basic SEO Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A modern, responsive webpage using Materialize CSS and jQuery with an indigo color theme.">
+    <meta name="keywords" content="Materialize CSS, jQuery, Responsive Web Design, SEO, Indigo Theme">
+    <meta name="author" content="Your Name">
+
+    <!-- ✅ Open Graph (for social media previews) -->
+    <meta property="og:title" content="Materialize Webpage with Indigo Theme">
+    <meta property="og:description" content="A modern, SEO-optimized webpage using Materialize CSS and jQuery.">
+    <meta property="og:image" content="your-thumbnail.jpg">
+    <meta property="og:url" content="https://yourwebsite.com">
+
+    <!-- ✅ Favicon -->
+    <link rel="apple-touch-icon" sizes="57x57" href="favicons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="favicons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="favicons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="favicons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="favicons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="favicons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="favicons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="favicons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicons/favicon-16x16.png">
+    <link rel="manifest" href="favicons/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="favicons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap">
+    <!-- ✅ Materialize CSS CDN (CSS should stay in <head> for faster rendering) -->
+    <link rel="stylesheet" href="css/materialize.min.css">
+    <!-- few inline styles -->
+    <style>
+        body{
+            opacity:0;
+        }
+    </style>
+    <!-- ✅ Custom Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <title>Materialize Webpage with Indigo Theme</title>
+</head>
+<body class="navy">
+    <div class="navy vertical-spacer"></div>
+    <!-- ✅ Navigation -->
+    <nav class="navy">
+        <div class="nav-wrapper container topnav">
+            <ul class="left hide-on-med-and-down">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Subscribe</a></li>
+                <li><a href="#">Shop</a></li>
+                <li><a href="#">Request a Quotation</a></li>
+            </ul>
+            <a href="#" class="more-menu">MORE OPTIONS</a>
+        </div>
+    </nav>
+
+    <!-- ✅ Main Content -->
+    
+    <div class="row block-first navy">
+        <div class="container">
+        <!-- 📌 Left Column (Main Content) -->
+            <div class="col s12 m12 l7 left">
+                <div class="htmlslider">
+                    <ul>
+                        <li><img src="images/payless-cups.png" alt="payless packaging" style="position: absolute;width: 100%;left: -44px;bottom: 200px;"><img src="images/30-off.png" alt="30% Off" style="position: absolute;width: 55%;right: 0;bottom: 190px;"></li>
+                    </ul>
+                </div>
+                <h1 class="logo"><img src="images/payless-logo.png" alt="Payless Packaging"><br>Packaging</h1>
+                <h2 class="sublogo">BRANDED & UNBRANDED PACKAGING</h2>
+            </div>
+            <div class="col s12 m12 l5 right quote">
+                <!--<div class="vertical-spacer"></div>-->
+                <h2>Request a Quote</h2>
+                <div class="row">
+                    <div class="input-field col s6">
+                      <i class="material-icons prefix white-text">account_circle</i>
+                      <input id="icon_name" type="text" class="validate white-text" required>
+                      <label for="icon_name">Name *</label>
+                    </div>
+                    <div class="input-field col s6">
+                      <i class="material-icons prefix white-text">phone</i>
+                      <input id="icon_telephone" type="tel" class="validate white-text" pattern="^\+44\s?\d{2,4}\s?\d{3,4}\s?\d{3,4}$|^0\d{2,4}\s?\d{3,4}\s?\d{3,4}$">
+                      <label class="active" for="icon_telephone">Telephone</label>
+                      <span class="helper-text white-text" data-error="Phone number is wrong" data-success="&#10004;"> </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                      <i class="material-icons prefix white-text">local_convenience_store</i>
+                      <input id="icon_company" type="text" class="validate white-text">
+                      <label for="icon_company">Company</label>
+                    </div>
+                    <div class="input-field col s6">
+                      <i class="material-icons prefix white-text">email</i>
+                      <input id="icon_email" type="email" class="validate white-text" required>
+                      <label class="active" for="icon_email">Email *</label>
+                      <span class="helper-text white-text" data-error="Email is wrong" data-success="&#10004;"> </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6 homepagequoteformselect">
+                        <select class="icons" multiple>
+                          <option value="Food Packaging" data-icon="images/bio-cups.jpg" class="left">Food Packaging</option>
+                          <option value="Socks Packaging" data-icon="images/autumn-cup.jpg" class="left">Socks Packaging</option>
+                          <option value="Box Packaging" data-icon="images/green-cups.jpg" class="left">Box Packaging</option>
+                        </select>
+                        <label>Choose Product</label>
+                    </div>
+                    <div class="input-field col s6 homepagequoteformselect">
+                        <select multiple>
+                          <option value="1000">1000</option>
+                          <option value="5000">5000</option>
+                          <option value="10000">10000</option>
+                          <option value="20000">20000</option>
+                        </select>
+                        <label>Quantity Required</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6 homepagequoteformselect">
+                        <input type="text" class="datepicker">
+                        <label>Expected Shipping Date </label>
+                    </div>
+                    <div class="input-field col s6 homepagequoteformselect">
+                        <select multiple>
+                            <option value="AB">AB – Aberdeen</option>
+                            <option value="AL">AL – St Albans</option>
+                            <option value="B">B – Birmingham</option>
+                            <option value="BA">BA – Bath</option>
+                            <option value="BB">BB – Blackburn</option>
+                            <option value="BD">BD – Bradford</option>
+                            <option value="BH">BH – Bournemouth</option>
+                            <option value="BL">BL – Bolton</option>
+                            <option value="BN">BN – Brighton</option>
+                            <option value="BR">BR – Bromley</option>
+                            <option value="BS">BS – Bristol</option>
+                            <option value="CA">CA – Carlisle</option>
+                            <option value="CB">CB – Cambridge</option>
+                            <option value="CF">CF – Cardiff</option>
+                            <option value="CH">CH – Chester</option>
+                            <option value="CM">CM – Chelmsford</option>
+                            <option value="CO">CO – Colchester</option>
+                            <option value="CR">CR – Croydon</option>
+                            <option value="CT">CT – Canterbury</option>
+                            <option value="CV">CV – Coventry</option>
+                            <option value="CW">CW – Crewe</option>
+                            <option value="DA">DA – Dartford</option>
+                            <option value="DD">DD – Dundee</option>
+                            <option value="DE">DE – Derby</option>
+                            <option value="DG">DG – Dumfries and Galloway</option>
+                            <option value="DH">DH – Durham</option>
+                            <option value="DL">DL – Darlington</option>
+                            <option value="DN">DN – Doncaster</option>
+                            <option value="DT">DT – Dorchester</option>
+                            <option value="DY">DY – Dudley</option>
+                            <option value="E">E – East London</option>
+                            <option value="EC">EC – London (Central)</option>
+                            <option value="EH">EH – Edinburgh</option>
+                            <option value="EN">EN – Enfield</option>
+                            <option value="EX">EX – Exeter</option>
+                            <option value="FK">FK – Falkirk</option>
+                            <option value="FY">FY – Blackpool</option>
+                            <option value="G">G – Glasgow</option>
+                            <option value="GL">GL – Gloucester</option>
+                            <option value="GU">GU – Guildford</option>
+                            <option value="HA">HA – Harrow</option>
+                            <option value="HD">HD – Huddersfield</option>
+                            <option value="HG">HG – Harrogate</option>
+                            <option value="HP">HP – Hemel Hempstead</option>
+                            <option value="HR">HR – Hereford</option>
+                            <option value="HS">HS – Outer Hebrides</option>
+                            <option value="HU">HU – Hull</option>
+                            <option value="HX">HX – Halifax</option>
+                            <option value="IG">IG – Ilford</option>
+                            <option value="IP">IP – Ipswich</option>
+                            <option value="IV">IV – Inverness</option>
+                            <option value="KA">KA – Kilmarnock</option>
+                            <option value="KT">KT – Kingston upon Thames</option>
+                            <option value="KW">KW – Kirkwall</option>
+                            <option value="KY">KY – Kirkcaldy</option>
+                            <option value="L">L – Liverpool</option>
+                            <option value="LA">LA – Lancaster</option>
+                            <option value="LD">LD – Llandrindod Wells</option>
+                            <option value="LE">LE – Leicester</option>
+                            <option value="LL">LL – Llandudno</option>
+                            <option value="LN">LN – Lincoln</option>
+                            <option value="LS">LS – Leeds</option>
+                            <option value="LU">LU – Luton</option>
+                            <option value="M">M – Manchester</option>
+                            <option value="ME">ME – Medway</option>
+                            <option value="MK">MK – Milton Keynes</option>
+                            <option value="ML">ML – Motherwell</option>
+                            <option value="N">N – North London</option>
+                            <option value="NE">NE – Newcastle upon Tyne</option>
+                            <option value="NG">NG – Nottingham</option>
+                            <option value="NN">NN – Northampton</option>
+                            <option value="NP">NP – Newport</option>
+                            <option value="NR">NR – Norwich</option>
+                            <option value="NW">NW – North West London</option>
+                            <option value="OL">OL – Oldham</option>
+                            <option value="OX">OX – Oxford</option>
+                            <option value="PA">PA – Paisley</option>
+                            <option value="PE">PE – Peterborough</option>
+                            <option value="PH">PH – Perth</option>
+                            <option value="PL">PL – Plymouth</option>
+                            <option value="PO">PO – Portsmouth</option>
+                            <option value="PR">PR – Preston</option>
+                            <option value="RG">RG – Reading</option>
+                            <option value="RH">RH – Redhill</option>
+                            <option value="RM">RM – Romford</option>
+                            <option value="S">S – Sheffield</option>
+                            <option value="SA">SA – Swansea</option>
+                            <option value="SE">SE – South East London</option>
+                            <option value="SG">SG – Stevenage</option>
+                            <option value="SK">SK – Stockport</option>
+                            <option value="SL">SL – Slough</option>
+                            <option value="SM">SM – Sutton</option>
+                            <option value="SN">SN – Swindon</option>
+                            <option value="SO">SO – Southampton</option>
+                            <option value="SP">SP – Salisbury</option>
+                            <option value="SR">SR – Sunderland</option>
+                            <option value="SS">SS – Southend-on-Sea</option>
+                            <option value="ST">ST – Stoke-on-Trent</option>
+                            <option value="SW">SW – South West London</option>
+                            <option value="SY">SY – Shrewsbury</option>
+                            <option value="TA">TA – Taunton</option>
+                            <option value="TD">TD – Galashiels</option>
+                            <option value="TF">TF – Telford</option>
+                            <option value="TN">TN – Tonbridge</option>
+                            <option value="TQ">TQ – Torquay</option>
+                            <option value="TR">TR – Truro</option>
+                            <option value="TS">TS – Teesside</option>
+                            <option value="TW">TW – Twickenham</option>
+                            <option value="UB">UB – Uxbridge</option>
+                            <option value="W">W – West London</option>
+                            <option value="WA">WA – Warrington</option>
+                            <option value="WC">WC – London (West Central)</option>
+                            <option value="WD">WD – Watford</option>
+                            <option value="WF">WF – Wakefield</option>
+                            <option value="WN">WN – Wigan</option>
+                            <option value="WR">WR – Worcester</option>
+                            <option value="WS">WS – Walsall</option>
+                            <option value="WV">WV – Wolverhampton</option>
+                            <option value="YO">YO – York</option>
+                            <option value="ZE">ZE – Shetland</option>
+
+                        </select>
+                        <label>Shipping Locations (Postal Regions)</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6 homepagequoteformselect">
+                         <input type="text" class="timepicker">
+                        <label>Right Time to Talk ( Phone )</label>
+                    </div>
+                    <div class="input-field col s6 homepagequoteformselect">
+                        <select multiple>
+                          <option value="Google Search">Google Search</option>
+                          <option value="From a Friend">From a Friend</option>
+                          <option value="From a Business">From a Business</option>
+                          <option value="Advertisements">Advertisements</option>
+                        </select>
+                        <label>How did you find Payless Packaging?</label>
+                    </div>
+                </div>
+                <div class="row">
+                  <div class="input-field col s12 homepagequoteformselect">
+                    <textarea id="specifics" class="materialize-textarea" data-length="1000"></textarea>
+                    <label for="specifics">Specific Requirements</label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="input-field col s12 homepagequoteformselect">
+                    <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+                        <i class="material-icons right">send</i>
+                    </button>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row block navy spiral">
+        <div class="container">
+                <div class="col s12 m12 l5 left">
+                    <div class="vertical-spacer"></div>
+                    <div class="vertical-spacer"></div>
+                    <div class="vertical-spacer"></div>
+                    <div class="vertical-spacer"></div>
+                    <a class="square-photo" href="#"><img loading="lazy" src="images/green-cups.jpg" alt="Green Cup"></a>
+                    <a class="link-text" href="#">Our Products</a>
+                </div>
+                <div class="col s12 m12 l7 right banner">
+                    <div class="vertical-spacer"></div>
+                    <div class="vertical-spacer"></div>
+                    <h3>get the best, but</h3>
+                    <img src="images/payless-script.png" alt="payless packaging">
+                    <h2>Get UK Manufactured Branded Packaging without breaking the bank</h2>
+                </div>
+        </div>
+    </div>
+    <div class="row block cobalt spiral-tail homevideo">
+        <div class="container">
+            <div class="col s12 m12 l5 left">
+                <div class="vertical-spacer"></div>
+                <div class="vertical-spacer"></div>
+                <h2>Learn more about</h2>
+                <h1 class="logo"><img loading="lazy" src="images/payless-logo.png" alt="Payless Packaging"><span>Packaging</span></h1>
+            </div>   
+            <div class="col s12 m12 l7 right">
+                <div class="vertical-spacer"></div>
+                <div class="vertical-spacer"></div>
+                <div class="video"><img loading="lazy" src="images/bespoke-packaging-unraveled.jpg" alt="Bespoke Packaging Video"></div>
+                <h3>HOW BESPOKE PACKAGING WORKS</h3>
+                <h3><strong>The Whistleblower's Tale</strong></h3>
+                <p>How UK Manufacturers are Reestablishing Production on the Island.<br>UK manufacturers are working to revive local manufacturing, tackling intense pricing competition from Asian competitors while striving to maintain price parity.</p>
+                <a class="waves-effect waves-light btn-large black white-text">VIEW</a>
+            </div>
+        </div>
+    </div>
+    <div class="row block cobalt products">
+        <div class="container">
+            <div class="col s12 full">
+                <div class="vertical-spacer"></div>
+                <div class="vertical-spacer"></div>
+                <h2>Order 100% UK<br>Pay Less</h2>
+                <ul class="bespokeproducts">
+                    <li><a href="#"><div><img loading="lazy" src="images/autumn-cup.jpg" alt=""></div><h3>Double Wall Coffee Cups</h3><h5>Ask for an unbeatable Quote</h5></a></li>
+                    <li><a href="#"><div><img loading="lazy" src="images/autumn-cup.jpg" alt=""></div><h3>Single Wall Beverage Cups</h3><h5>Ask for an unbeatable Quote</h5></a></li>
+                    <li><a href="#"><div><img loading="lazy" src="images/autumn-cup.jpg" alt=""></div><h3>Tall Vending Cups</h3><h5>Ask for an unbeatable Quote</h5></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row block sky customers">
+        <div class="container">
+            <div class="col s12 full">
+                <div class="vertical-spacer"></div>
+                <div class="vertical-spacer"></div>
+                <h2>Customers</h2>
+                <ul class="logolist">
+                    <li><img  loading="lazy" src="images/Audi-logo-1999-1920x1080.png" alt="Audi"></li>
+                    <li><img loading="lazy" src="images/Bacardi-logo.png" alt="Bacardi"></li>
+                    <li><img loading="lazy" src="images/Fiat-logo.png" alt="fiat"></li>
+                    <li><img loading="lazy" src="images/hp-logo.png" alt="HP"></li>
+                    <li><img loading="lazy" src="images/Lavazza-Logo (1).png" alt="Lavazza"></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row block navy shop">
+        <div class="container">
+            <div class="col s12 m12 l5 left caption">
+                <div class="vertical-spacer"></div>
+                <div class="vertical-spacer"></div>
+                <h2>SHOP</h2>
+                <h3>UNBRANDED</h3>
+                <div class="shopmessage navy"><a href="#"><img src="images/30-off-2.png" alt="30 % off"></a></div>
+            </div>
+            <div class="col s12 m12 l7 right">
+                 <div class="vertical-spacer"></div>
+                <div class="vertical-spacer"></div>
+                <ul class="genericproducts">
+                    <li class="row"><a class="item col s12 m12 l4" href="#">
+                        <div>
+                            <img loading="lazy" src="images/autumn-cup.jpg" alt="">
+                        </div></a>
+                        <a class="desc col s12 m12 l8" href="#">
+                        <div>
+                            <h3>Coffee Cups</h3>
+                            <p>
+                                There is enough space here for an in-depth description of your team. 
+                                Establish their credibility and expertise here. 
+                                There is enough space here for an in-depth description of your team. 
+                                Establish their credibility and expertise here.
+                            </p>
+                            
+                        </div></a>
+                        <a class="waves-effect waves-light  orange darken-3 btn shopbutton">Shop Now</a>
+                    </li>
+                    <li class="row"><a class="item col s12 m12 l4" href="#">
+                        <div>
+                            <img loading="lazy" src="images/autumn-cup.jpg" alt="">
+                        </div></a>
+                        <a class="desc col s12 m12 l8" href="#">
+                        <div>
+                            <h3>Coffee Cups</h3>
+                            <p>
+                                There is enough space here for an in-depth description of your team. 
+                                Establish their credibility and expertise here. 
+                                There is enough space here for an in-depth description of your team. 
+                                Establish their credibility and expertise here.
+                            </p>
+                            
+                        </div></a>
+                        <a class="waves-effect waves-light  orange darken-3 btn shopbutton">Shop Now</a>
+                    </li>
+                    <li class="row"><a class="item col s12 m12 l4" href="#">
+                        <div>
+                            <img loading="lazy" src="images/autumn-cup.jpg" alt="">
+                        </div></a>
+                        <a class="desc col s12 m12 l8" href="#">
+                        <div>
+                            <h3>Coffee Cups</h3>
+                            <p>
+                                There is enough space here for an in-depth description of your team. 
+                                Establish their credibility and expertise here. 
+                                There is enough space here for an in-depth description of your team. 
+                                Establish their credibility and expertise here.
+                            </p>
+                            
+                        </div></a>
+                        <a class="waves-effect waves-light  orange darken-3 btn shopbutton">Shop Now</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row block navy reviews">
+        <div class="container">
+            <div class="col s12 full">
+                <div class="vertical-spacer"></div>
+                <div class="vertical-spacer"></div>
+                <h2>Straight from our Customers</h2>
+                <div class="row ">
+                    <div class="col s4 review">
+                        <a class="rating"><i class="small material-icons">star</i><i class="small material-icons">star</i><i class="small material-icons">star</i><i class="small material-icons">star</i><i class="small material-icons">star</i></a>
+                        <p>Aliquam velit purus, tristique vitae nisl eu, tristique interdum purus. Praesent scelerisque erat commodo, euismod arcu vel, sollicitudin velit. Donec nisl neque, blandit id ligula ac, gravida dictum tellus. Mauris aliquet vehicula erat, sed tincidunt nunc pulvinar sed. Aenean ornare, lorem sed euismod tristique, nulla purus ullamcorper nisl.</p>
+                        <div class="photo"><img  loading="lazy" src="images/dad.jpg" alt="Customer"></div><strong>Nicholas Cage</strong>
+                    </div>
+                    <div class="col s4 review">
+                        <a class="rating"><i class="small material-icons">star</i><i class="small material-icons">star</i><i class="small material-icons">star</i><i class="small material-icons">star</i><i class="small material-icons">star</i></a>
+                        <p>Aliquam velit purus, tristique vitae nisl eu, tristique interdum purus. Praesent scelerisque erat commodo, euismod arcu vel, sollicitudin velit. Donec nisl neque, blandit id ligula ac, gravida dictum tellus. Mauris aliquet vehicula erat, sed tincidunt nunc pulvinar sed. Aenean ornare, lorem sed euismod tristique, nulla purus ullamcorper nisl.</p>
+                        <div class="photo"><img  loading="lazy" src="images/mom.jpg" alt="Customer"></div><strong>Kate Winslet</strong>
+                    </div>
+                    <div class="col s4 review">
+                        <a class="rating"><i class="small material-icons">star</i><i class="small material-icons">star</i><i class="small material-icons">star</i><i class="small material-icons">star</i><i class="small material-icons">star</i></a>
+                        <p>Aliquam velit purus, tristique vitae nisl eu, tristique interdum purus. Praesent scelerisque erat commodo, euismod arcu vel, sollicitudin velit. Donec nisl neque, blandit id ligula ac, gravida dictum tellus. Mauris aliquet vehicula erat, sed tincidunt nunc pulvinar sed. Aenean ornare, lorem sed euismod tristique, nulla purus ullamcorper nisl.</p>
+                        <div class="photo"><img  loading="lazy" src="images/dad.jpg" alt="Customer"></div><strong>Rehman Alidousti</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ✅ Footer -->
+    <footer class="page-footer indigo darken-3">
+        <div class="container">
+            <div class="row">
+                <div class="col s12">
+                    
+                    <p class="white-text">© 2025 My Website. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ✅ JavaScript (Placed at the end for faster loading) -->
+    
+    <!-- ✅ jQuery CDN -->
+   <!-- <script src="js/jquery-3.7.1.min.js"></script>-->
+
+    <!-- ✅ Materialize JS CDN -->
+    <script src="js/materialize.min.js"></script>
+
+    <!-- ✅ Custom JS -->
+    <script src="js/scripts.js"></script>
+    <script>
+        //the intersection observer script must be at the foot to work it seems
+        if(typeof(window.IntersectionObserver) == "function"){
+            console.log("IntersectionObserver available");
+            let observer = new IntersectionObserver(
+            (entries, observer) => { 
+            entries.forEach(entry => {
+                if (entry.intersectionRatio > 0) {
+                    entry.target.classList.add('show');
+                    //if($(entry.target).is('img')){
+                    //   entry.target.src = entry.target.dataset.src;
+                    //   entry.target.classList.add('is-loaded'); 
+                    //}
+                }else {
+                    //entry.target.classList.remove('show');
+                }
+            
+                
+                //observer.unobserve(entry.target);
+              });
+            });
+            
+            //document.querySelectorAll('.img-to-load').forEach(EL => { observer.observe(EL) });
+            document.querySelectorAll('.container').forEach(EL => { observer.observe(EL) });
+            
+            
+            /*let iobserver = new IntersectionObserver(
+            (entries, iobserver) => { 
+            entries.forEach(entry => {
+                console.log("here");
+                entry.target.src = entry.target.dataset.src;
+                iobserver.unobserve(entry.target);
+                
+              });
+            });
+            document.querySelectorAll('.img-to-load').forEach(EL => { iobserver.observe(EL) });*/
+        }else{
+            console.log("IntersectionObserver not available");
+        } 
+    </script>
+
+</body>
+</html>

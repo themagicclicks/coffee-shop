@@ -1,0 +1,17 @@
+RewriteEngine On
+
+# Don't rewrite requests for existing files or directories
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Exclude common static asset folders from routing
+RewriteCond %{REQUEST_URI} ^/(css|js|images|uploads|includes|assets|fonts|documents)/ [NC]
+RewriteRule ^ - [L]
+
+# Route empty path (homepage) to index.php
+RewriteRule ^$ index.php [L,QSA]
+# Route /type/ to index.php?entitytype=type
+RewriteRule ^([^/]+)/?$ index.php?entitytype=$1 [L,QSA]
+# Route /type/name to index.php?entitytype=type&entityname=name
+RewriteRule ^([^/]+)/([^/]+)/?$ index.php?entitytype=$1&entityname=$2 [L,QSA]

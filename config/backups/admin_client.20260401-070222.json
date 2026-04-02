@@ -1,0 +1,200 @@
+{
+    "admin_path": "admin-client",
+    "menu": [
+        {
+            "label": "Homepage",
+            "entity_type": "home-page",
+            "icon": "home",
+            "type": "list",
+            "children": [],
+            "attribute_labels": []
+        },
+        {
+            "label": "Blog",
+            "entity_type": "blog",
+            "icon": "article",
+            "type": "list",
+            "children": [],
+            "attribute_labels": []
+        },
+        {
+            "label": "News",
+            "entity_type": "news",
+            "icon": "campaign",
+            "type": "list",
+            "children": [],
+            "attribute_labels": []
+        },
+        {
+            "label": "Pages",
+            "entity_type": "pages",
+            "icon": "description",
+            "type": "list",
+            "children": [],
+            "attribute_labels": []
+        },
+        {
+            "label": "Events",
+            "entity_type": "cafe-event-list",
+            "icon": "event",
+            "type": "list",
+            "children": [],
+            "attribute_labels": []
+        },
+        {
+            "label": "Testimonials",
+            "entity_type": "customer-testimonial-grid",
+            "icon": "format_quote",
+            "type": "list",
+            "children": [],
+            "attribute_labels": []
+        },
+        {
+            "label": "Hero Banner",
+            "entity_type": "product-page-hero-banner",
+            "icon": "view_carousel",
+            "type": "list",
+            "children": [],
+            "attribute_labels": []
+        },
+        {
+            "label": "HTML Snippets",
+            "entity_type": "snippets",
+            "icon": "developer_mode",
+            "type": "list",
+            "children": [],
+            "attribute_labels": []
+        },
+        {
+            "label": "Shop Products",
+            "entity_type": "shop-product-sell",
+            "icon": "shopping_cart",
+            "type": "list",
+            "children": [],
+            "attribute_labels": []
+        },
+        {
+            "label": "Menu",
+            "entity_type": "",
+            "icon": "restaurant_menu",
+            "type": "list",
+            "children": [
+                {
+                    "label": "Espresso",
+                    "entity_type": "menu-espresso-drink",
+                    "icon": "local_cafe",
+                    "type": "list",
+                    "children": [],
+                    "attribute_labels": []
+                },
+                {
+                    "label": "Milk Coffee",
+                    "entity_type": "menu-milk-coffee-drink",
+                    "icon": "local_cafe",
+                    "type": "list",
+                    "children": [],
+                    "attribute_labels": []
+                },
+                {
+                    "label": "Iced Coffee",
+                    "entity_type": "menu-iced-coffee-drink",
+                    "icon": "ac_unit",
+                    "type": "list",
+                    "children": [],
+                    "attribute_labels": []
+                },
+                {
+                    "label": "Cold Brew",
+                    "entity_type": "menu-cold-brew-drink",
+                    "icon": "coffee",
+                    "type": "list",
+                    "children": [],
+                    "attribute_labels": []
+                },
+                {
+                    "label": "Speciality",
+                    "entity_type": "menu-speciality-drink",
+                    "icon": "star",
+                    "type": "list",
+                    "children": [],
+                    "attribute_labels": []
+                },
+                {
+                    "label": "Tea",
+                    "entity_type": "menu-tea-drink",
+                    "icon": "emoji_food_beverage",
+                    "type": "list",
+                    "children": [],
+                    "attribute_labels": []
+                }
+            ],
+            "attribute_labels": []
+        }
+    ],
+    "admin_email": "admin@example.com",
+    "admin_password_hash": "$2y$10$G7H9V7yP5D6eYwO7ZmTh9.YQhHVvuT6B/at0iBSVv25aMbNSm.KLC",
+    "two_step_email_otp_enabled": false,
+    "frontend_form_email": "themagicclicks@gmail.com",
+    "theme_name": "dark-coffee",
+    "site_title": "Willow Cup Coffee - The Community Peace Spot",
+    "meta_description": "Small Moments, Great Coffee - Pause, sip, and enjoy the simple pleasures.",
+    "meta_keywords": "Coffee shop,Cafe Coffee near me,Open now,Specialty coffee,Specialty coffee shop,Espresso, Cappuccino, Latte, Coffee roasters,Roasted coffee, Best cold brew, Brooklyn, Maple Avenue, cafe with wifi, Quiet coffee shop to study, Coffee shop with outdoor seating ,Organic/fair trade coffee",
+    "meta_author": "TheMagicClicks",
+    "og_title": "Willow Cup Coffee - The Community Peace Spot",
+    "og_description": "Small Moments, Great Coffee - Pause, sip, and enjoy the simple pleasures.",
+    "og_url": "https://aperiq.in/coffee-shop/",
+    "frontend_navigation": {
+        "top_nav": [
+            {
+                "name": "home",
+                "label": "Home",
+                "href": "/",
+                "target": "_top"
+            },
+            {
+                "name": "menu",
+                "label": "Menu",
+                "href": "menu/",
+                "target": "_top"
+            },
+            {
+                "name": "shop",
+                "label": "Shop",
+                "href": "shop/",
+                "target": "_top"
+            },
+            {
+                "name": "about",
+                "label": "About",
+                "href": "pages/about-us/",
+                "target": "_top"
+            },
+            {
+                "name": "visit-us",
+                "label": "Visit Us",
+                "href": "pages/visit-us/",
+                "target": "_top"
+            }
+        ],
+        "open_menu": [
+            {
+                "name": "home",
+                "label": "Home",
+                "href": "/",
+                "target": "_top"
+            },
+            {
+                "name": "about-us",
+                "label": "About Us",
+                "href": "pages/about-us/",
+                "target": "_top"
+            },
+            {
+                "name": "visit-us",
+                "label": "Visit Us",
+                "href": "pages/visit-us/",
+                "target": "_top"
+            }
+        ]
+    }
+}
