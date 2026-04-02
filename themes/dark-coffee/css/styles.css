@@ -2132,7 +2132,60 @@ ul.bespokeproducts.menu li a div,
     .order-qty-picker {
         width: 100%;
     }
-    .order-modal__actions {
-        justify-content: flex-start;
-    }
+.order-modal__actions {
+    justify-content: flex-start;
+}
+
+.paypal-demo-checkout {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 20px;
+}
+
+.paypal-demo-card,
+.paypal-demo-summary {
+    background: #f8f5ef;
+    border: 1px solid rgba(22, 41, 60, 0.12);
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.paypal-demo-addresses {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.paypal-demo-address h6 {
+    margin: 0 0 10px 0;
+    font-weight: bold;
+}
+
+.paypal-demo-summary {
+    text-align: center;
+}
+
+.paypal-demo-summary__brand {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: #003087;
+    color: #fff;
+    font-weight: bold;
+    margin-bottom: 14px;
+}
+
+.paypal-demo-summary__total {
+    font-size: 2.4rem;
+    font-weight: bold;
+    margin: 20px 0;
+    color: #003087;
+}
+
+.paypal-demo-summary__note {
+    margin-top: 14px;
+    color: #6f5846;
+}
 }

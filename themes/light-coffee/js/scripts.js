@@ -9,19 +9,20 @@ document.addEventListener('DOMContentLoaded', function() {
     var selectElems = document.querySelectorAll('select');
     M.FormSelect.init(selectElems);
     const el = document.getElementById("checkout-tabs");
-    const tabinstance = M.Tabs.init(el, {
+    const tabinstance = el ? M.Tabs.init(el, {
         onShow: function(tab) {
           if (tab && tab.id) {
-            // Update the URL hash without reloading the page
             history.replaceState(null, null, '#' + tab.id);
           }
         }
-    });
+    }) : null;
     const goToAddressBtn = document.getElementById("go-to-address");
     if (goToAddressBtn) {
         goToAddressBtn.addEventListener("click", function (e) {
             e.preventDefault();
-            tabinstance.select('address-step');
+            if (tabinstance) {
+                tabinstance.select('address-step');
+            }
         });
     }
 
@@ -86,10 +87,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Run on page load and resize
-    if (!window.matchMedia("(max-width: 768px)").matches) {
+	if (!window.matchMedia("(max-width: 768px)").matches) {
 		equalizeHeights();
 		window.addEventListener('resize', equalizeHeights);
 	}
+    
 
     const captionEl = document.getElementById('caption');
 const captionItems = document.querySelectorAll('#captions li');
@@ -171,44 +173,35 @@ const captionItems = document.querySelectorAll('#captions li');
         console.log("Screen width: " + window.innerWidth + "px");
     }
 
-    let addresses = JSON.parse(localStorage.getItem('savedAddresses')) || [];
-    // Handle same-as-shipping toggle
-      //document.getElementById('same-as-shipping').addEventListener('change', function () {
-      //  const billing = document.getElementById('billing-address-list');
-      //  billing.style.display = this.checked ? 'none' : 'block';
-      //});
-      const sameAsShipping = document.getElementById('same-as-shipping');
+    let addresses = getSavedGuestAddresses();
+    const sameAsShipping = document.getElementById('same-as-shipping');
 
-        if (sameAsShipping) {
-          sameAsShipping.addEventListener('change', function () {
-            const billing = document.getElementById('billing-address-list');
-            if (billing) {
-              billing.style.display = this.checked ? 'none' : 'block';
-            }
-          });
+    if (sameAsShipping) {
+      sameAsShipping.addEventListener('change', function () {
+        toggleBillingAddressVisibility(this.checked);
+      });
+      toggleBillingAddressVisibility(sameAsShipping.checked);
+    }
+
+    const saveNewAddress = document.getElementById('save-new-address');
+    if (saveNewAddress) {
+      saveNewAddress.addEventListener('click', function (e) {
+        e.preventDefault();
+        const createdAddress = createGuestAddressFromForm();
+        if (!createdAddress) {
+          return;
         }
-    
-      // Save new address
-      const saveNewAddress = document.getElementById('save-new-address');
-      if (saveNewAddress) {
-          document.getElementById('save-new-address').addEventListener('click', function () {
-            const newAddr = {
-              id: Date.now(),
-              label: document.getElementById('new-label').value,
-              name: document.getElementById('new-name').value,
-              line1: document.getElementById('new-line1').value,
-              line2: document.getElementById('new-line2').value,
-              city: document.getElementById('new-city').value,
-              postcode: document.getElementById('new-postcode').value,
-              country: 'UK'
-            };
-        
-            addresses.push(newAddr);
-            localStorage.setItem('savedAddresses', JSON.stringify(addresses));
-            renderAddresses();
-            M.toast({ html: 'Address saved successfully!', classes: 'green' });
-          });
-      }
+
+        addresses = getSavedGuestAddresses();
+        renderAddresses(addresses);
+        setSelectedGuestAddresses(createdAddress.id, createdAddress.id);
+        if (sameAsShipping) {
+          sameAsShipping.checked = true;
+          toggleBillingAddressVisibility(true);
+        }
+        M.toast({ html: 'Address saved successfully!', classes: 'green' });
+      });
+    }
       //the ratings
       document.querySelectorAll('a.rating').forEach(function(item) {
 
@@ -239,12 +232,13 @@ const captionItems = document.querySelectorAll('#captions li');
       if (continueToReview) {
           document.getElementById('continue-to-review').addEventListener('click', function (e) {
             e.preventDefault();
-            tabs.select('review-step');
+            continueCheckoutToPayment(tabinstance, sameAsShipping);
           });
       }
       if(addresses){
         renderAddresses(addresses);
       }
+      initCheckoutDemoStage(tabinstance);
       if(document.querySelector('.bespokeproducts.menu')) {
         menuOrganiser();
       }
@@ -279,6 +273,113 @@ function adjustQuantity(button, delta) {
   current = isNaN(current) ? 1 : current + delta;
   input.value = current < 1 ? 1 : current;
 }
+
+function normalizeSiteAssetUrl(url) {
+  const rawUrl = String(url || '').trim();
+  if (!rawUrl) {
+    return '';
+  }
+
+  const currentSite = String(window.SITE_URL || '').trim();
+  if (!currentSite) {
+    return rawUrl;
+  }
+
+  const normalizedCurrentSite = currentSite.replace(/\/+$/, '/');
+  const normalizedUrl = rawUrl.replace(/\\/g, '/');
+  let currentOrigin = '';
+  let currentPathname = '';
+  let currentProjectPath = '';
+
+  try {
+    const parsedCurrentSite = new URL(normalizedCurrentSite, window.location.origin);
+    currentOrigin = parsedCurrentSite.origin;
+    currentPathname = parsedCurrentSite.pathname || '/';
+    currentProjectPath = currentPathname.replace(/\/+$/, '/');
+  } catch (error) {
+    currentOrigin = window.location.origin || '';
+  }
+
+  const knownBases = [
+    'https://aperiq.in/fiverr/coffee-shop/',
+    'http://aperiq.in/fiverr/coffee-shop/',
+    'https://www.aperiq.in/fiverr/coffee-shop/',
+    'http://www.aperiq.in/fiverr/coffee-shop/',
+    'http://127.0.0.1/coffee-shop/',
+    'https://127.0.0.1/coffee-shop/',
+    'http://localhost/coffee-shop/',
+    'https://localhost/coffee-shop/'
+  ];
+
+  for (let index = 0; index < knownBases.length; index += 1) {
+    const knownBase = knownBases[index];
+    if (normalizedUrl.indexOf(knownBase) === 0) {
+      return normalizedCurrentSite + normalizedUrl.substring(knownBase.length);
+    }
+  }
+
+  if (/^https?:\/\//i.test(normalizedUrl)) {
+    try {
+      const parsedUrl = new URL(normalizedUrl);
+      if (currentOrigin && parsedUrl.origin === currentOrigin && currentProjectPath) {
+        const projectFolder = currentProjectPath.split('/').filter(Boolean).pop() || '';
+        const marker = '/' + projectFolder + '/';
+        const markerIndex = parsedUrl.pathname.indexOf(marker);
+        if (markerIndex >= 0) {
+          return currentOrigin + currentProjectPath + parsedUrl.pathname.substring(markerIndex + marker.length) + (parsedUrl.search || '') + (parsedUrl.hash || '');
+        }
+      }
+    } catch (error) {
+      return rawUrl;
+    }
+  }
+
+  if (normalizedUrl.indexOf('media/') === 0 || normalizedUrl.indexOf('images/') === 0 || normalizedUrl.indexOf('documents/') === 0) {
+    return normalizedCurrentSite + normalizedUrl.replace(/^\/+/, '');
+  }
+
+  if (normalizedUrl.charAt(0) === '/' && currentOrigin && currentProjectPath) {
+    const projectFolder = currentProjectPath.split('/').filter(Boolean).pop() || '';
+    if (projectFolder) {
+      const marker = '/' + projectFolder + '/';
+      const markerIndex = normalizedUrl.indexOf(marker);
+      if (markerIndex >= 0) {
+        return currentOrigin + currentProjectPath + normalizedUrl.substring(markerIndex + marker.length);
+      }
+    }
+  }
+
+  return rawUrl;
+}
+
+function normalizeCartProduct(product) {
+  if (!product || typeof product !== 'object') {
+    return product;
+  }
+
+  return Object.assign({}, product, {
+    image: normalizeSiteAssetUrl(product.image || '')
+  });
+}
+
+function getStoredCartProducts() {
+  let cart = [];
+
+  try {
+    cart = JSON.parse(localStorage.getItem('unbrandedCart')) || [];
+  } catch (error) {
+    cart = [];
+  }
+
+  const normalizedCart = cart.map(normalizeCartProduct);
+  const wasChanged = JSON.stringify(cart) !== JSON.stringify(normalizedCart);
+  if (wasChanged) {
+    localStorage.setItem('unbrandedCart', JSON.stringify(normalizedCart));
+  }
+
+  return normalizedCart;
+}
+
 function addToCartFromPage(){
   const title = document.querySelector('h4.product-title').innerText;
   const quantity = parseInt(document.querySelector('.quantity-input').value);
@@ -287,9 +388,9 @@ function addToCartFromPage(){
   const price = document.getElementById("product-price").innerHTML;
   const vprice = document.getElementById("calculated-vat-price").innerHTML;
   let vfprice = vprice.replace(' inc. VAT','');
-  const image = document.querySelector('.carousel-item.active img').src;
+  const image = normalizeSiteAssetUrl(document.querySelector('.carousel-item.active img').src);
 
-  let cart = JSON.parse(localStorage.getItem('unbrandedCart')) || [];
+  let cart = getStoredCartProducts();
 
   // Check if SKU already exists
   const existing = cart.find(product => product.sku === sku);
@@ -316,9 +417,9 @@ function addToCart(button) {
   const vprice = item.querySelector('.vprice').innerHTML;
   let vfprice = vprice.replace(' inc. VAT','');
   //alert(vfprice);
-  const image = item.querySelector('img').src;
+  const image = normalizeSiteAssetUrl(item.querySelector('img').src);
 
-  let cart = JSON.parse(localStorage.getItem('unbrandedCart')) || [];
+  let cart = getStoredCartProducts();
 
   // Check if SKU already exists
   const existing = cart.find(product => product.sku === sku);
@@ -408,7 +509,7 @@ function switchVatPrice(){
 
 }
 function populateCart() {
-  const cart = JSON.parse(localStorage.getItem('unbrandedCart')) || [];
+  const cart = getStoredCartProducts();
   const cartList = document.querySelector('.open-cart .cart-items');
   cartList.innerHTML = '';
 
@@ -443,7 +544,7 @@ function populateCart() {
 }
 
 function updateQuantity(index, delta) {
-  let cart = JSON.parse(localStorage.getItem('unbrandedCart')) || [];
+  let cart = getStoredCartProducts();
   if (!cart[index]) return;
 
   cart[index].quantity += delta;
@@ -455,7 +556,7 @@ function updateQuantity(index, delta) {
 }
 
 function removeFromCart(index) {
-  let cart = JSON.parse(localStorage.getItem('unbrandedCart')) || [];
+  let cart = getStoredCartProducts();
   cart.splice(index, 1);
   localStorage.setItem('unbrandedCart', JSON.stringify(cart));
   populateCart();
@@ -465,7 +566,7 @@ function removeFromCart(index) {
   }
 }
 function paintCheckoutPage() {
-    let cart = JSON.parse(localStorage.getItem('unbrandedCart')) || [];
+    let cart = getStoredCartProducts();
     console.log(cart);
 
     document.querySelector('header').style.display = 'none';
@@ -501,12 +602,289 @@ function paintCheckoutPage() {
     document.querySelector('#cart-step .price-total').innerHTML = '<h2 class="cart-total">Total Inclusive of VAT £'+totalwithvat.toFixed(2)+'</h2>';
     document.querySelector('ul.products-list-checkout').innerHTML = carthtml;
 }
+function getSavedGuestAddresses() {
+    try {
+        return JSON.parse(localStorage.getItem('savedAddresses')) || [];
+    } catch (error) {
+        return [];
+    }
+}
+
+function saveGuestAddresses(addresses) {
+    localStorage.setItem('savedAddresses', JSON.stringify(addresses || []));
+}
+
+function getCheckoutAddressSelection() {
+    try {
+        return JSON.parse(localStorage.getItem('guestCheckoutSelection')) || {};
+    } catch (error) {
+        return {};
+    }
+}
+
+function saveCheckoutAddressSelection(selection) {
+    localStorage.setItem('guestCheckoutSelection', JSON.stringify(selection || {}));
+}
+
+function clearAddressFormFields() {
+    ['new-label', 'new-name', 'new-line1', 'new-line2', 'new-city', 'new-postcode'].forEach(function (fieldId) {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.value = '';
+        }
+    });
+}
+
+function collectGuestAddressFormValues() {
+    const values = {
+        label: (document.getElementById('new-label') || {}).value || '',
+        name: (document.getElementById('new-name') || {}).value || '',
+        line1: (document.getElementById('new-line1') || {}).value || '',
+        line2: (document.getElementById('new-line2') || {}).value || '',
+        city: (document.getElementById('new-city') || {}).value || '',
+        postcode: (document.getElementById('new-postcode') || {}).value || '',
+        country: 'UK'
+    };
+
+    values.label = values.label.trim();
+    values.name = values.name.trim();
+    values.line1 = values.line1.trim();
+    values.line2 = values.line2.trim();
+    values.city = values.city.trim();
+    values.postcode = values.postcode.trim();
+    if (!values.label) {
+        values.label = 'Guest Address';
+    }
+
+    return values;
+}
+
+function createGuestAddressFromForm() {
+    const address = collectGuestAddressFormValues();
+    if (!address.name || !address.line1 || !address.city || !address.postcode) {
+        M.toast({ html: 'Please complete name, address line 1, city and postcode.', classes: 'red darken-2' });
+        return null;
+    }
+
+    address.id = Date.now();
+    const addresses = getSavedGuestAddresses();
+    addresses.push(address);
+    saveGuestAddresses(addresses);
+    clearAddressFormFields();
+    return address;
+}
+
+function toggleBillingAddressVisibility(hidden) {
+    const billing = document.getElementById('billing-address-list');
+    if (billing) {
+        billing.style.display = hidden ? 'none' : 'block';
+    }
+}
+
+function setSelectedGuestAddresses(shippingId, billingId) {
+    saveCheckoutAddressSelection({
+        shipping: shippingId || '',
+        billing: billingId || ''
+    });
+}
+
+function resolveSelectedGuestAddresses(sameAsShippingChecked) {
+    const addresses = getSavedGuestAddresses();
+    const shipping = document.querySelector('input.shipping-address:checked');
+    const billing = document.querySelector('input.billing-address:checked');
+    const shippingId = shipping ? shipping.value : '';
+    const billingId = sameAsShippingChecked ? shippingId : (billing ? billing.value : '');
+
+    return {
+        shippingId: shippingId,
+        billingId: billingId,
+        shippingAddress: addresses.find(function (address) { return String(address.id) === String(shippingId); }) || null,
+        billingAddress: addresses.find(function (address) { return String(address.id) === String(billingId); }) || null
+    };
+}
+
+function formatGuestAddress(address) {
+    if (!address) {
+        return '<p>No address selected.</p>';
+    }
+
+    return '<strong>' + address.label + '</strong><br>'
+        + address.name + '<br>'
+        + address.line1 + '<br>'
+        + (address.line2 ? address.line2 + '<br>' : '')
+        + address.city + '<br>'
+        + address.postcode + '<br>'
+        + address.country;
+}
+
+function getCheckoutPaymentPaneId() {
+    if (document.getElementById('payment-step')) {
+        return 'payment-step';
+    }
+    if (document.getElementById('review-step')) {
+        return 'review-step';
+    }
+    return 'payment-step';
+}
+
+function ensureCheckoutPaymentPane() {
+    const tabs = document.getElementById('checkout-tabs');
+    if (!tabs) {
+        return null;
+    }
+
+    let paneId = getCheckoutPaymentPaneId();
+    let pane = document.getElementById(paneId);
+
+    if (!pane) {
+        paneId = 'payment-step';
+        const contentRoot = tabs.parentElement ? tabs.parentElement.parentElement : null;
+        if (contentRoot) {
+            pane = document.createElement('div');
+            pane.id = paneId;
+            pane.className = 'col s12';
+            contentRoot.appendChild(pane);
+        }
+    }
+
+    if (!tabs.querySelector('a[href="#' + paneId + '"]')) {
+        const tabItem = document.createElement('li');
+        tabItem.className = 'tab col s4';
+        tabItem.innerHTML = '<a href="#' + paneId + '"><i class="material-icons">payment</i><span>Payment</span></a>';
+        tabs.appendChild(tabItem);
+    }
+
+    const trigger = tabs.querySelector('a[href="#' + paneId + '"]');
+    if (trigger) {
+        trigger.innerHTML = '<i class="material-icons">payment</i><span>Payment</span>';
+    }
+
+    return paneId;
+}
+
+function renderCheckoutPaymentStage(selectedAddresses) {
+    const paymentPaneId = ensureCheckoutPaymentPane();
+    if (!paymentPaneId) {
+        return;
+    }
+
+    const paymentPane = document.getElementById(paymentPaneId);
+    if (!paymentPane) {
+        return;
+    }
+
+    const cart = JSON.parse(localStorage.getItem('unbrandedCart')) || [];
+    const total = cart.reduce(function (sum, item) {
+        const unitPrice = parseFloat(String(item.vfprice || '').replace(/[^0-9.\-]/g, '')) || 0;
+        const quantity = parseInt(item.quantity || 0, 10) || 0;
+        return sum + (unitPrice * quantity);
+    }, 0);
+
+    paymentPane.innerHTML = ''
+        + '<div class="paypal-demo-checkout">'
+        + '  <div class="row">'
+        + '    <div class="col s12 m7">'
+        + '      <div class="paypal-demo-card">'
+        + '        <h4>PayPal Checkout</h4>'
+        + '        <p>This demo shows the guest checkout payment stage. Addresses are stored in your browser only.</p>'
+        + '        <div class="paypal-demo-addresses">'
+        + '          <div class="paypal-demo-address"><h6>Shipping Address</h6>' + formatGuestAddress(selectedAddresses.shippingAddress) + '</div>'
+        + '          <div class="paypal-demo-address"><h6>Billing Address</h6>' + formatGuestAddress(selectedAddresses.billingAddress) + '</div>'
+        + '        </div>'
+        + '      </div>'
+        + '    </div>'
+        + '    <div class="col s12 m5">'
+        + '      <div class="paypal-demo-summary">'
+        + '        <div class="paypal-demo-summary__brand">PayPal</div>'
+        + '        <h5>Order Summary</h5>'
+        + '        <p>' + cart.length + ' item(s) ready for checkout.</p>'
+        + '        <div class="paypal-demo-summary__total">Â£' + total.toFixed(2) + '</div>'
+        + '        <button type="button" id="pay-and-place-order" class="btn large blue darken-2 waves-effect waves-light">Pay And Place Order</button>'
+        + '        <p class="paypal-demo-summary__note">Demo only. No real transaction is processed here.</p>'
+        + '      </div>'
+        + '    </div>'
+        + '  </div>'
+        + '</div>';
+
+    const payButton = document.getElementById('pay-and-place-order');
+    if (payButton) {
+        payButton.addEventListener('click', function () {
+            alert("The Demo Doesn't Guide Users through Real Payment");
+        });
+    }
+}
+
+function continueCheckoutToPayment(tabinstance, sameAsShippingCheckbox) {
+    const sameAsShippingChecked = !!(sameAsShippingCheckbox && sameAsShippingCheckbox.checked);
+    let addresses = getSavedGuestAddresses();
+
+    if (!addresses.length) {
+        const createdAddress = createGuestAddressFromForm();
+        if (createdAddress) {
+            addresses = getSavedGuestAddresses();
+            setSelectedGuestAddresses(createdAddress.id, createdAddress.id);
+            if (sameAsShippingCheckbox) {
+                sameAsShippingCheckbox.checked = true;
+                toggleBillingAddressVisibility(true);
+            }
+        }
+    }
+
+    const selectedAddresses = resolveSelectedGuestAddresses(sameAsShippingChecked);
+    if (!selectedAddresses.shippingAddress) {
+        M.toast({ html: 'Please save and choose a shipping address before payment.', classes: 'red darken-2' });
+        return;
+    }
+
+    if (!sameAsShippingChecked && !selectedAddresses.billingAddress) {
+        M.toast({ html: 'Please choose a billing address or use the same as shipping option.', classes: 'red darken-2' });
+        return;
+    }
+
+    if (sameAsShippingChecked) {
+        selectedAddresses.billingAddress = selectedAddresses.shippingAddress;
+        selectedAddresses.billingId = selectedAddresses.shippingId;
+    }
+
+    saveCheckoutAddressSelection({
+        shipping: selectedAddresses.shippingId,
+        billing: selectedAddresses.billingId
+    });
+    renderCheckoutPaymentStage(selectedAddresses);
+
+    const paymentPaneId = ensureCheckoutPaymentPane();
+    if (tabinstance && paymentPaneId) {
+        tabinstance.select(paymentPaneId);
+    }
+}
+
+function initCheckoutDemoStage() {
+    const tabs = document.getElementById('checkout-tabs');
+    if (!tabs) {
+        return;
+    }
+
+    ensureCheckoutPaymentPane();
+    const selection = getCheckoutAddressSelection();
+    const addresses = getSavedGuestAddresses();
+    const shippingAddress = addresses.find(function (address) { return String(address.id) === String(selection.shipping || ''); }) || null;
+    const billingAddress = addresses.find(function (address) { return String(address.id) === String(selection.billing || ''); }) || shippingAddress;
+
+    if (shippingAddress) {
+        renderCheckoutPaymentStage({
+            shippingAddress: shippingAddress,
+            billingAddress: billingAddress
+        });
+    }
+}
+
 function renderAddresses(addresses) {
     let shippingContainer = document.getElementById('shipping-address-list');
     let billingContainer = document.getElementById('billing-address-list');
     if(shippingContainer && billingContainer){
         shippingContainer.innerHTML = '';
         billingContainer.innerHTML = '';
+        const selection = getCheckoutAddressSelection();
     
         if (addresses && addresses.length === 0) {
           shippingContainer.innerHTML = '<p>No saved addresses.</p>';
@@ -517,7 +895,7 @@ function renderAddresses(addresses) {
         addresses.forEach(addr => {
           let html = `
             <label>
-              <input name="shipping" type="radio" value="${addr.id}" class="with-gap shipping-address">
+              <input name="shipping" type="radio" value="${addr.id}" class="with-gap shipping-address" ${String(selection.shipping || '') === String(addr.id) ? 'checked' : ''}>
               <span><strong>${addr.label}</strong>: ${addr.name}, ${addr.line1}, ${addr.city}, ${addr.postcode}</span>
             </label>
           `;
@@ -525,11 +903,31 @@ function renderAddresses(addresses) {
     
           html = `
             <label>
-              <input name="billing" type="radio" value="${addr.id}" class="with-gap billing-address">
+              <input name="billing" type="radio" value="${addr.id}" class="with-gap billing-address" ${String(selection.billing || '') === String(addr.id) ? 'checked' : ''}>
               <span><strong>${addr.label}</strong>: ${addr.name}, ${addr.line1}, ${addr.city}, ${addr.postcode}</span>
             </label>
           `;
           billingContainer.innerHTML += html;
+        });
+
+        document.querySelectorAll('input.shipping-address').forEach(function (input) {
+            input.addEventListener('change', function () {
+                const currentSelection = getCheckoutAddressSelection();
+                saveCheckoutAddressSelection({
+                    shipping: input.value,
+                    billing: currentSelection.billing || input.value
+                });
+            });
+        });
+
+        document.querySelectorAll('input.billing-address').forEach(function (input) {
+            input.addEventListener('change', function () {
+                const currentSelection = getCheckoutAddressSelection();
+                saveCheckoutAddressSelection({
+                    shipping: currentSelection.shipping || '',
+                    billing: input.value
+                });
+            });
         });
     }
   }
@@ -620,6 +1018,9 @@ function menuOrganiser(){
     });
 
 }
+
+
+
 
 function getTableOrderStorageKey() {
     return 'willowCupTableOrder';
@@ -1165,4 +1566,3 @@ function initTableMenuOrdering() {
 }
 
 document.addEventListener('DOMContentLoaded', initTableMenuOrdering);
-
