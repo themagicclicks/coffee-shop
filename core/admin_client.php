@@ -7,8 +7,8 @@ function adminClientDefaultConfig() {
     return [
         'admin_path' => 'admin-client',
         'menu' => [],
-        'admin_email' => 'admin@example.com',
-        'admin_password_hash' => '$2y$10$G7H9V7yP5D6eYwO7ZmTh9.YQhHVvuT6B/at0iBSVv25aMbNSm.KLC',
+        'admin_email' => '',
+        'admin_password_hash' => '',
         'two_step_email_otp_enabled' => false,
         'frontend_form_email' => '',
         'theme_name' => 'dark-coffee',
@@ -252,17 +252,17 @@ function adminClientFindMenuItemByEntityType($menu, $entityType) {
 
 function loadAdminClientConfig($configFile) {
     if (!is_file($configFile) || !is_readable($configFile)) {
-        return adminClientDefaultConfig();
+        return adminClientNormalizeConfig(adminClientDefaultConfig());
     }
 
     $rawConfig = file_get_contents($configFile);
     if ($rawConfig === false) {
-        return adminClientDefaultConfig();
+        return adminClientNormalizeConfig(adminClientDefaultConfig());
     }
 
     $decoded = json_decode($rawConfig, true);
     if (!is_array($decoded)) {
-        return adminClientDefaultConfig();
+        return adminClientNormalizeConfig(adminClientDefaultConfig());
     }
 
     return adminClientNormalizeConfig($decoded);
