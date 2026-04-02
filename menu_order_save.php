@@ -176,6 +176,19 @@ if (!empty($attributeMap['order_closed_and_paid'])) {
     $paidValue = orderTruthy($existingAttributeValues['order_closed_and_paid'] ?? '') ? 'on' : 'off';
     setEntityAttributeValue($orderEntityId, $attributeMap['order_closed_and_paid'], $paidValue);
 }
+if (!empty($attributeMap['order_cancelled'])) {
+    $cancelledValue = orderTruthy($existingAttributeValues['order_cancelled'] ?? '') ? 'on' : 'off';
+    setEntityAttributeValue($orderEntityId, $attributeMap['order_cancelled'], $cancelledValue);
+}
+if (!empty($attributeMap['order_close_time']) && array_key_exists('order_close_time', $existingAttributeValues)) {
+    setEntityAttributeValue($orderEntityId, $attributeMap['order_close_time'], (string) ($existingAttributeValues['order_close_time'] ?? ''));
+}
+if (!empty($attributeMap['order_paid_closed_time']) && array_key_exists('order_paid_closed_time', $existingAttributeValues)) {
+    setEntityAttributeValue($orderEntityId, $attributeMap['order_paid_closed_time'], (string) ($existingAttributeValues['order_paid_closed_time'] ?? ''));
+}
+if (!empty($attributeMap['order_cancelled_time']) && array_key_exists('order_cancelled_time', $existingAttributeValues)) {
+    setEntityAttributeValue($orderEntityId, $attributeMap['order_cancelled_time'], (string) ($existingAttributeValues['order_cancelled_time'] ?? ''));
+}
 
 $templateHtml = '';
 if ($templateId > 0) {
@@ -199,5 +212,6 @@ orderJsonResponse([
     'preview_html' => $previewHtml,
     'order_closed' => orderTruthy($existingAttributeValues['order_closed'] ?? ''),
     'order_closed_and_paid' => orderTruthy($existingAttributeValues['order_closed_and_paid'] ?? ''),
+    'order_cancelled' => orderTruthy($existingAttributeValues['order_cancelled'] ?? ''),
 ]);
 ?>

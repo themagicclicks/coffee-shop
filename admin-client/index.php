@@ -25,6 +25,10 @@ $routes = [
         'file' => __DIR__ . '/navigation.php',
         'title' => 'Navigation',
     ],
+    'orders' => [
+        'file' => __DIR__ . '/orders.php',
+        'title' => 'Orders',
+    ],
 ];
 
 $currentPage = array_key_exists($requestedPage, $routes) ? $requestedPage : 'dashboard';

@@ -7,6 +7,16 @@ document.addEventListener('DOMContentLoaded', function () {
         M.FormSelect.init(document.querySelectorAll('select'));
     }
 
+    if (window.M && typeof window.M.Datepicker === 'function') {
+        M.Datepicker.init(document.querySelectorAll('.datepicker'), {
+            format: 'yyyy-mm-dd',
+            autoClose: true,
+            defaultDate: new Date(),
+            setDefaultDate: false,
+            container: document.body
+        });
+    }
+
     if (window.M && typeof window.M.updateTextFields === 'function') {
         M.updateTextFields();
     }
@@ -15,6 +25,15 @@ document.addEventListener('DOMContentLoaded', function () {
         link.addEventListener('click', function (event) {
             var entityName = link.getAttribute('data-entity-name') || 'this item';
             if (!window.confirm('Delete ' + entityName + '?')) {
+                event.preventDefault();
+            }
+        });
+    });
+
+    document.querySelectorAll('.admin-order-action').forEach(function (button) {
+        button.addEventListener('click', function (event) {
+            var message = button.getAttribute('data-confirm') || '';
+            if (message && !window.confirm(message)) {
                 event.preventDefault();
             }
         });

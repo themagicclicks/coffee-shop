@@ -147,6 +147,20 @@ function getEntitiesByTypeId($entityTypeId) {
     return db_connect("SELECT id, name, created_at FROM entities WHERE entity_type_id = ?", ['i'], [$entityTypeId], 'select');
 }
 
+function getEntitiesByTypeIdForDate($entityTypeId, $date) {
+    $date = trim((string) $date);
+    if ($date === '') {
+        return getEntitiesByTypeId($entityTypeId);
+    }
+
+    return db_connect(
+        "SELECT id, name, created_at FROM entities WHERE entity_type_id = ? AND DATE(created_at) = ? ORDER BY created_at DESC, id DESC",
+        ['i', 's'],
+        [$entityTypeId, $date],
+        'select'
+    );
+}
+
 function createEntityAttribute($name) {
     return db_connect("INSERT INTO entity_attributes (name) VALUES (?)", ['s'], [$name], 'insert');
 }
@@ -277,6 +291,24 @@ function setEntityAttributeValue($entityId, $attributeId, $value) {
 function getEntityAttributeValues($entityId) {
     $query = "SELECT ea.name, ead.value FROM entity_attribute_data ead JOIN entity_attributes ea ON ead.attribute_id = ea.id WHERE ead.entity_id = ?";
     return db_connect($query, ['i'], [$entityId], 'select');
+}
+
+function getEntityAttributeValuesForEntities($entityIds) {
+    $entityIds = array_values(array_filter(array_map('intval', (array) $entityIds)));
+    if (empty($entityIds)) {
+        return [];
+    }
+
+    return db_connect(
+        "SELECT ead.entity_id, ea.name, ead.value
+         FROM entity_attribute_data ead
+         JOIN entity_attributes ea ON ead.attribute_id = ea.id
+         WHERE ead.entity_id IN (" . implode(',', $entityIds) . ")
+         ORDER BY ead.entity_id ASC, ea.name ASC",
+        [],
+        [],
+        'select'
+    );
 }
 
 function getEntityAttributeDataForEntity($entityId, $attributeIds = []) {

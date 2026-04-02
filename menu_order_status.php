@@ -47,11 +47,14 @@ orderJsonResponse([
     'order_entity_id' => $orderEntityId,
     'order_closed' => orderStatusTruthy($attributeMap['order_closed'] ?? ''),
     'order_closed_and_paid' => orderStatusTruthy($attributeMap['order_closed_and_paid'] ?? ''),
+    'order_cancelled' => orderStatusTruthy($attributeMap['order_cancelled'] ?? ''),
     'order_items_html' => (string) ($attributeMap['order_items'] ?? ''),
     'order_total' => (string) ($attributeMap['order_total'] ?? ''),
     'table' => (string) ($attributeMap['table'] ?? ''),
     'ordered_by' => (string) ($attributeMap['ordered_by'] ?? ''),
     'ordered_from_phone' => (string) ($attributeMap['ordered_from_phone'] ?? ''),
     'order_close_time' => (string) ($attributeMap['order_close_time'] ?? ''),
+    'order_paid_closed_time' => (string) ($attributeMap['order_paid_closed_time'] ?? ''),
+    'order_cancelled_time' => (string) ($attributeMap['order_cancelled_time'] ?? ''),
 ]);
 ?>

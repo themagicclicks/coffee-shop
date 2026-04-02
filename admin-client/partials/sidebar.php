@@ -45,6 +45,7 @@ function renderAdminClientMenuItems($menuItems, $level = 0) {
         </ul>
     <?php } ?>
     <ul class="collection" style="margin-top: 16px; border-radius: 14px; overflow: hidden; border: none;">
+        <li class="collection-item"><a href="index.php?page=orders"><i class="material-icons">receipt_long</i><span>Orders</span></a></li>
         <li class="collection-item"><a href="index.php?page=navigation"><i class="material-icons">menu</i><span>Navigation</span></a></li>
         <li class="collection-item"><a href="index.php?page=settings"><i class="material-icons">settings</i><span>Settings</span></a></li>
         <li class="collection-item"><a href="index.php?logout=1"><i class="material-icons">logout</i><span>Logout</span></a></li>
