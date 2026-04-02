@@ -1,10 +1,15 @@
 <?php
 
 // Include database connection & functions
+require_once __DIR__ . '/core/env.php';
+loadEnv(__DIR__ . '/.env');
+
+define('BASE', $_ENV['BASE']);
+define('SITE', $_ENV['SITE']);
 //define("BASE","/home/u804273671/domains/aperiq.in/public_html/fiverr/coffee-shop/");
 //define("SITE","https://aperiq.in/fiverr/coffee-shop/");
-define("BASE","C:/xampp/htdocs/coffee-shop/");
-define("SITE","http://127.0.0.1/coffee-shop/");
+//define("BASE","C:/laragon/www/fiverr/coffee-shop/");
+//define("SITE","http://127.0.0.1/fiverr/coffee-shop/");
 // Get entity type and entity name from URL
 $entityType = isset($_GET['entitytype']) ? urldecode($_GET['entitytype']) : '';
 $entityName = isset($_GET['entityname']) ? urldecode($_GET['entityname']) : '';

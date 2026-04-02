@@ -1,0 +1,22 @@
+# Environment config
+.env
+
+# Archives
+*.zip
+*.rar
+*.7z
+
+# Logs
+*.log
+
+# Dependencies
+node_modules/
+vendor/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Backups / DB dumps
+backup/
+*.sql

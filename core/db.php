@@ -87,12 +87,19 @@ function db_connect($query, $params, $values, $type = 'select') {
         error_log('db_connect failed to initialize mysqli');
         die('Database connection failed.');
     }
-
-    if (!$conn->real_connect('localhost', 'eav_cs', 'cs$#2026', 'eav_cs')) {
+	//Hostinger
+    //if (!$conn->real_connect('localhost', 'eav_cs', 'cs$#2026', 'eav_cs')) {
+    //    error_log('db_connect connection failed: ' . mysqli_connect_error());
+    //    die('Database connection failed.');
+    //}
+	//Laragon local
+	if (!$conn->real_connect($_ENV['DB_HOST'],
+    $_ENV['DB_USER'],
+    $_ENV['DB_PASS'],
+    $_ENV['DB_NAME'])) {
         error_log('db_connect connection failed: ' . mysqli_connect_error());
         die('Database connection failed.');
     }
-
     $conn->set_charset('utf8mb4');
 
     $statement = $conn->prepare($query);
