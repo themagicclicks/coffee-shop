@@ -18,7 +18,7 @@ function adminClientDefaultConfig() {
         'meta_author' => 'Your Name',
         'og_title' => 'Materialize Webpage with Indigo Theme',
         'og_description' => 'A modern, SEO-optimized webpage using Materialize CSS and jQuery.',
-        'og_url' => 'https://paylesspackaging.co.uk',
+        'og_url' => 'https://aperiq.in',
         'frontend_navigation' => [
             'top_nav' => [
                 ['name' => 'home', 'label' => 'Home', 'href' => '/', 'target' => '_top'],

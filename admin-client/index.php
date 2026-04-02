@@ -1,5 +1,9 @@
 <?php
+require_once __DIR__ . '/../core/env.php';
+loadEnv(__DIR__ . '/../.env');
 
+define('BASE', $_ENV['BASE']);
+define('SITE', $_ENV['SITE']);
 require_once __DIR__ . '/../core/admin_client.php';
 
 $config = loadAdminClientConfig(__DIR__ . '/../config/admin_client.json');
