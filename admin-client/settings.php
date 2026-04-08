@@ -22,6 +22,8 @@ if (empty($availableThemes)) {
 }
 
 $currentTheme = $config['theme_name'] ?? 'dark-coffee';
+$currentCurrency = $config['currency_code'] ?? 'USD';
+$availableCurrencies = adminClientAllowedCurrencies();
 ?>
 <section class="admin-content">
     <?php if (!empty($flash['message'])) { ?>
@@ -53,6 +55,14 @@ $currentTheme = $config['theme_name'] ?? 'dark-coffee';
                     <?php } ?>
                 </select>
                 <label for="theme_name">Frontend Theme</label>
+            </div>
+            <div class="input-field" style="margin-top: 24px;">
+                <select id="currency_code" name="currency_code">
+                    <?php foreach ($availableCurrencies as $currencyCode) { ?>
+                        <option value="<?php echo htmlspecialchars($currencyCode); ?>" <?php echo $currencyCode === $currentCurrency ? 'selected' : ''; ?>><?php echo htmlspecialchars($currencyCode); ?></option>
+                    <?php } ?>
+                </select>
+                <label for="currency_code">Dashboard Currency</label>
             </div>
             <div class="input-field" style="margin-top: 24px;">
                 <input type="text" id="site_title" name="site_title" value="<?php echo htmlspecialchars($config['site_title'] ?? ''); ?>">

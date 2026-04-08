@@ -1,0 +1,56 @@
+{
+  "stats": {
+    "todayOrders": 12,
+    "todayRevenue": 4250,
+    "pendingOrders": 3,
+    "popularItem": "Cappuccino"
+  },
+  "orders": [
+    {
+      "id": "ORD001",
+      "items": ["Cappuccino", "Croissant"],
+      "total": 280,
+      "type": "dine-in",
+      "status": "pending",
+      "time": "10:30 AM"
+    },
+    {
+      "id": "ORD002",
+      "items": ["Latte"],
+      "total": 180,
+      "type": "takeaway",
+      "status": "completed",
+      "time": "11:10 AM"
+    },
+    {
+      "id": "ORD003",
+      "items": ["Flat White", "Blueberry Muffin"],
+      "total": 340,
+      "type": "dine-in",
+      "status": "completed",
+      "time": "11:45 AM"
+    },
+    {
+      "id": "ORD004",
+      "items": ["Mocha", "Banana Bread"],
+      "total": 310,
+      "type": "takeaway",
+      "status": "pending",
+      "time": "12:05 PM"
+    },
+    {
+      "id": "ORD005",
+      "items": ["Americano", "Espresso Shot"],
+      "total": 220,
+      "type": "dine-in",
+      "status": "pending",
+      "time": "12:20 PM"
+    }
+  ],
+  "salesTrend": [
+    { "time": "9 AM", "revenue": 500 },
+    { "time": "10 AM", "revenue": 900 },
+    { "time": "11 AM", "revenue": 1200 },
+    { "time": "12 PM", "revenue": 1650 }
+  ]
+}

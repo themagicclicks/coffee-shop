@@ -127,6 +127,13 @@ const captionItems = document.querySelectorAll('#captions li');
       menu.classList.toggle('active');
       hamburger.classList.toggle('active');
     });
+    const downloadMenuBtn = document.querySelector('.download-menu-btn');
+    if (downloadMenuBtn) {
+        downloadMenuBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            openMenuPdf();
+        });
+    }
     //shopping cart and unbranded products
    calculateVatPrice();
    switchVatPrice(); 
@@ -272,6 +279,55 @@ function adjustQuantity(button, delta) {
   let current = parseInt(input.value, 10);
   current = isNaN(current) ? 1 : current + delta;
   input.value = current < 1 ? 1 : current;
+}
+
+function openMenuPdf() {
+  const menuTemplate = document.getElementById('menu-pdf-template');
+  if (!menuTemplate || typeof window.html2pdf === 'undefined') {
+    return;
+  }
+
+  const printable = menuTemplate.cloneNode(true);
+  printable.removeAttribute('id');
+  printable.style.position = 'static';
+  printable.style.left = '0';
+  printable.style.top = '0';
+  printable.style.width = '210mm';
+  printable.style.opacity = '1';
+  printable.style.pointerEvents = 'auto';
+  printable.style.zIndex = '1';
+  printable.style.display = 'block';
+  document.body.appendChild(printable);
+
+  const options = {
+    margin: [4, 4, 4, 4],
+    filename: 'willow-cup-menu.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#f9f4ed'
+    },
+    jsPDF: {
+      unit: 'mm',
+      format: 'a4',
+      orientation: 'portrait'
+    },
+    pagebreak: {
+      mode: ['css', 'legacy'],
+      avoid: ['.menu-pdf-header', '.menu-pdf-section', '.menu-pdf-item', '.menu-pdf-footer']
+    }
+  };
+
+  window.html2pdf().set(options).from(printable).outputPdf('bloburl').then(function (pdfUrl) {
+    window.open(pdfUrl, '_blank', 'noopener');
+  }).catch(function () {
+    if (window.M && typeof window.M.toast === 'function') {
+      M.toast({ html: 'Menu PDF could not be generated right now.', classes: 'red darken-2' });
+    }
+  }).finally(function () {
+    printable.remove();
+  });
 }
 
 function normalizeSiteAssetUrl(url) {

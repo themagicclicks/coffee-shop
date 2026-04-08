@@ -378,6 +378,79 @@ function replaceProductsOptionPlaceholder($html) {
     return str_replace('##BRANDEDPACKAGINGOPTIONS##', getBrandedPackagingOptions(), $html);
 }
 
+function humanizeEntitySlug($value) {
+    return ucwords(str_replace(['-', '_'], ' ', trim((string) $value)));
+}
+
+function getPrintableMenuSections() {
+    $sections = [];
+    $types = getEntityTypesByPattern('menu-%-drink');
+
+    foreach ($types as $typeRow) {
+        $entityTypeId = (int) ($typeRow['id'] ?? 0);
+        if ($entityTypeId <= 0) {
+            continue;
+        }
+
+        $typeName = (string) ($typeRow['name'] ?? '');
+        $sectionTitle = trim((string) ($typeRow['title'] ?? ''));
+        if ($sectionTitle === '') {
+            $sectionTitle = humanizeEntitySlug(str_replace(['menu-', '-drink'], '', $typeName));
+        }
+
+        $attributeDefinitions = getAttributesByEntityType($entityTypeId);
+        $attributeIds = array_column($attributeDefinitions, 'attribute_id');
+        $attributeNames = buildEntityAttributeNameMap($attributeIds);
+        $entities = getEntitiesByTypeId($entityTypeId);
+        $items = [];
+
+        foreach ($entities as $entity) {
+            $attributeData = getEntityAttributeDataForEntity($entity['id'], $attributeIds);
+            $attributeMap = [];
+            foreach ($attributeData as $attr) {
+                $attrName = $attributeNames[$attr['attribute_id']] ?? '';
+                if ($attrName !== '') {
+                    $attributeMap[$attrName] = (string) ($attr['value'] ?? '');
+                }
+            }
+
+            $itemTitle = trim((string) ($attributeMap['title'] ?? ''));
+            //if ($itemTitle === '') {
+            //    $itemTitle = humanizeEntitySlug($entity['name'] ?? 'Menu Item');
+            //}
+
+            $itemSubtitle = trim((string) ($attributeMap['sub_title'] ?? ''));
+            //if ($itemSubtitle === '') {
+            //    $itemSubtitle = trim((string) ($attributeMap['description'] ?? ''));
+            //}
+            //if ($itemSubtitle === '') {
+            //    $itemSubtitle = trim((string) ($attributeMap['content'] ?? ''));
+            //}
+            //$itemSubtitle = trim(strip_tags($itemSubtitle));
+
+            $itemPrice = trim((string) ($attributeMap['Price'] ?? ''));
+            //if ($itemPrice === '') {
+            //    $itemPrice = trim((string) ($attributeMap['sale_price'] ?? ''));
+            //}
+
+            $items[] = [
+                'title' => $itemTitle,
+                'sub_title' => $itemSubtitle,
+                'Price' => $itemPrice,
+            ];
+        }
+
+        if (!empty($items)) {
+            $sections[] = [
+                'title' => $sectionTitle,
+                'items' => $items,
+            ];
+        }
+    }
+
+    return $sections;
+}
+
 ?>
 
 

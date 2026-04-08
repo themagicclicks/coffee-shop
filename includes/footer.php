@@ -49,6 +49,7 @@
 
     <!-- ✅ Materialize JS CDN -->
     <script src="<?php echo themeAssetUrl('js/materialize.min.js'); ?>"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <!-- ✅ Custom JS -->
     <script>window.SITE_URL = <?php echo json_encode(SITE); ?>;</script>

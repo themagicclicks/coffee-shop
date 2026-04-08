@@ -39,6 +39,7 @@ if (is_dir($themesDir)) {
 $adminPath = adminClientSanitizePath($_POST['admin_path'] ?? $config['admin_path']);
 $adminEmail = adminClientNormalizeEmail($_POST['admin_email'] ?? $config['admin_email']);
 $frontendFormEmail = adminClientNormalizeEmail($_POST['frontend_form_email'] ?? ($config['frontend_form_email'] ?? ''));
+$currencyCode = adminClientNormalizeCurrencyCode($_POST['currency_code'] ?? ($config['currency_code'] ?? 'USD'));
 $themeName = adminClientNormalizeThemeName($_POST['theme_name'] ?? ($config['theme_name'] ?? 'dark-coffee'));
 $siteTitle = adminClientNormalizeText($_POST['site_title'] ?? ($config['site_title'] ?? ''));
 $metaDescription = adminClientNormalizeText($_POST['meta_description'] ?? ($config['meta_description'] ?? ''));
@@ -76,6 +77,7 @@ $saved = adminClientSaveConfig($configFile, [
     'admin_path' => $adminPath,
     'admin_email' => $adminEmail,
     'frontend_form_email' => $frontendFormEmail,
+    'currency_code' => $currencyCode,
     'theme_name' => $themeName,
     'site_title' => $siteTitle,
     'meta_description' => $metaDescription,

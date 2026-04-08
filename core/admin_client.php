@@ -11,6 +11,7 @@ function adminClientDefaultConfig() {
         'admin_password_hash' => '',
         'two_step_email_otp_enabled' => false,
         'frontend_form_email' => '',
+        'currency_code' => 'USD',
         'theme_name' => 'dark-coffee',
         'site_title' => 'Willow Cup Coffee - The Community Peace Spot',
         'meta_description' => 'A modern, responsive webpage using Materialize CSS and jQuery with an indigo color theme.',
@@ -60,6 +61,15 @@ function adminClientNormalizeThemeName($themeName) {
     $themeName = strtolower(trim((string) $themeName));
     $themeName = preg_replace('/[^a-z0-9\-_]/', '', $themeName);
     return $themeName !== '' ? $themeName : 'dark-coffee';
+}
+
+function adminClientAllowedCurrencies() {
+    return ['USD', 'INR', 'EUR', 'GBP', 'AED'];
+}
+
+function adminClientNormalizeCurrencyCode($currencyCode) {
+    $currencyCode = strtoupper(trim((string) $currencyCode));
+    return in_array($currencyCode, adminClientAllowedCurrencies(), true) ? $currencyCode : 'USD';
 }
 
 function adminClientNormalizeText($value) {
@@ -220,6 +230,7 @@ function adminClientNormalizeConfig($config) {
     $config['admin_password_hash'] = trim((string) ($config['admin_password_hash'] ?? $defaults['admin_password_hash']));
     $config['two_step_email_otp_enabled'] = !empty($config['two_step_email_otp_enabled']);
     $config['frontend_form_email'] = adminClientNormalizeEmail($config['frontend_form_email'] ?? '');
+    $config['currency_code'] = adminClientNormalizeCurrencyCode($config['currency_code'] ?? ($defaults['currency_code'] ?? 'USD'));
     $config['theme_name'] = adminClientNormalizeThemeName($config['theme_name'] ?? 'dark-coffee');
     $config['site_title'] = adminClientNormalizeText($config['site_title'] ?? $defaults['site_title']);
     $config['meta_description'] = adminClientNormalizeText($config['meta_description'] ?? $defaults['meta_description']);

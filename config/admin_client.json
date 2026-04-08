@@ -135,6 +135,7 @@
     "admin_password_hash": "$2y$10$vDvjNHOVO5oDRloiT3eBH.z9TtpFZ20bcl5aS2xc8ZMm3Nj/bvznS",
     "two_step_email_otp_enabled": false,
     "frontend_form_email": "themagicclicks@gmail.com",
+    "currency_code": "USD",
     "theme_name": "dark-coffee",
     "site_title": "Willow Cup Coffee - The Community Peace Spot",
     "meta_description": "Small Moments, Great Coffee - Pause, sip, and enjoy the simple pleasures.",
