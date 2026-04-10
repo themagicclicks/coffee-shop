@@ -39,6 +39,7 @@ $currentPage = array_key_exists($requestedPage, $routes) ? $requestedPage : 'das
 $pageFile = $routes[$currentPage]['file'];
 $pageTitle = $routes[$currentPage]['title'];
 $pageStyles = '';
+$pageBodyClass = '';
 
 if ($currentSection !== '') {
     $pageFile = __DIR__ . '/section.php';
@@ -48,7 +49,28 @@ if ($currentSection !== '') {
 
 if ($currentPage === 'pdf-layout') {
     $activeThemeName = htmlspecialchars((string) ($config['theme_name'] ?? 'dark-coffee'), ENT_QUOTES, 'UTF-8');
+    $pageBodyClass = 'admin-pdf-layout-page';
     $pageStyles .= '<link rel="stylesheet" href="../themes/' . $activeThemeName . '/css/styles.css">';
+    $pageStyles .= '<style>'
+        . 'body.admin-pdf-layout-page{font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif !important;}'
+        . 'body.admin-pdf-layout-page .admin-shell,'
+        . 'body.admin-pdf-layout-page .admin-sidebar,'
+        . 'body.admin-pdf-layout-page .admin-main,'
+        . 'body.admin-pdf-layout-page .admin-content,'
+        . 'body.admin-pdf-layout-page .admin-card,'
+        . 'body.admin-pdf-layout-page .admin-card h1,'
+        . 'body.admin-pdf-layout-page .admin-card h2,'
+        . 'body.admin-pdf-layout-page .admin-card h3,'
+        . 'body.admin-pdf-layout-page .admin-card h4,'
+        . 'body.admin-pdf-layout-page .admin-card h5,'
+        . 'body.admin-pdf-layout-page .admin-card h6,'
+        . 'body.admin-pdf-layout-page .admin-card p,'
+        . 'body.admin-pdf-layout-page .admin-card .btn,'
+        . 'body.admin-pdf-layout-page .admin-card .btn-flat,'
+        . 'body.admin-pdf-layout-page .admin-card .helper-note,'
+        . 'body.admin-pdf-layout-page .admin-pdf-toolbar,'
+        . 'body.admin-pdf-layout-page .admin-pdf-toolbar *{font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif !important;}'
+        . '</style>';
 }
 
 if (!adminClientPathIsAllowed($requestUri, $config['admin_path'])) {

@@ -40,7 +40,7 @@
     </div>
   </div>
 </footer>
-
+</body>
 
     <!-- ✅ JavaScript (Placed at the end for faster loading) -->
     
@@ -95,6 +95,6 @@
         } 
     </script>
 
-</body>
+
 </html>
 
