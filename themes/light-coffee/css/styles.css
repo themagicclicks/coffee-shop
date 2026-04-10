@@ -1881,21 +1881,35 @@ ul.bespokeproducts.menu li a div,
     left: -99999px;
     top: 0;
     width: 210mm;
-    background: #f9f4ed;
     color: #2b211a;
     padding: 0;
     opacity: 0;
     pointer-events: none;
     z-index: -1;
 }
+
 .menu-pdf-page {
     width: 210mm;
     min-height: auto;
     padding: 10mm 12mm 10mm;
     box-sizing: border-box;
-    background: #f9f4ed;
+    /*background: #f9f4ed;*/
     font-family: Georgia, "Times New Roman", serif;
     page-break-after: auto;
+}
+.menu-pdf-page .menu-pdf-left, .menu-pdf-page .menu-pdf-right {
+	width: 25%;
+	float: left;
+	text-align: center;
+}
+.menu-pdf-left img, .menu-pdf-right img{
+	width: 60%;
+	position: relative;
+}
+.menu-pdf-page .menu-pdf-center{
+	width: 50%;
+	float: left;
+	/*background: #f9f4ed;*/
 }
 .menu-pdf-header {
     text-align: center;
@@ -1930,7 +1944,7 @@ ul.bespokeproducts.menu li a div,
     line-height: 1.5;
 }
 .menu-pdf-body {
-    column-count: 2;
+    column-count: 1;
     column-gap: 10mm;
     margin-top: 6mm;
 }
@@ -1998,6 +2012,7 @@ ul.bespokeproducts.menu li a div,
     justify-content: space-between;
     gap: 6mm;
     align-items: center;
+	width: 180mm;
 }
 .menu-pdf-footer__logo {
     width: 30mm;
@@ -2007,6 +2022,22 @@ ul.bespokeproducts.menu li a div,
     font-size: 3mm;
     letter-spacing: 0.5mm;
     text-transform: uppercase;
+}
+.download-menu-btn {
+	position: absolute;
+	width: 60px;
+	height: 60px;
+	display: inline-block;
+	/* background-color: #FFF; */
+	/* border-radius: 60px; */
+	text-align: center;
+	color: #FFF;
+	line-height: 60px;
+	font-size: 3rem;
+	margin: 0 20px;
+}
+.download-menu-btn i{
+	font-size: 3rem;
 }
 @media (max-width: 768px) { 
 

@@ -1003,6 +1003,250 @@ body {
     margin: 0;
 }
 
+.admin-pdf-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    margin-bottom: 18px;
+}
+
+.admin-pdf-toolbar__note {
+    margin-left: auto;
+}
+
+.admin-pdf-stage {
+    position: relative;
+    overflow: auto;
+    padding: 28px 24px;
+    min-height: 70vh;
+    border-radius: 18px;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.72) 0%, rgba(248,243,237,0.88) 100%);
+    border: 1px solid var(--admin-border);
+}
+
+.admin-pdf-guide-layer {
+    position: absolute;
+    top: 28px;
+    left: 50%;
+    width: 210mm;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 4;
+}
+
+.admin-pdf-guide-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    border-top: 2px dotted rgba(204, 42, 42, 0.65);
+}
+
+.admin-pdf-guide-label {
+    position: absolute;
+    right: 10px;
+    top: -18px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #a12424;
+    background: rgba(255, 244, 244, 0.96);
+    border: 1px solid rgba(161, 36, 36, 0.18);
+}
+
+.admin-pdf-editor {
+    position: relative;
+    z-index: 2;
+    width: 210mm;
+    margin: 0 auto;
+}
+
+.admin-pdf-editor .menu-pdf-source {
+    position: relative !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 210mm !important;
+    height: auto;
+    min-height: 0;
+    opacity: 1 !important;
+    padding: 0 !important;
+    pointer-events: auto !important;
+    z-index: 1 !important;
+}
+
+.admin-pdf-editor .menu-pdf-page {
+    position: relative;
+    width: 210mm;
+    min-height: 0;
+    margin: 0 auto;
+    padding: 10mm 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    background: #f9f4ed;
+    color: #2b211a;
+    font-family: Georgia, "Times New Roman", serif;
+    box-shadow: 0 24px 52px rgba(46, 32, 21, 0.14);
+}
+
+.admin-pdf-editor .menu-pdf-page[contenteditable="true"]:focus {
+    outline: 2px solid rgba(121, 85, 72, 0.24);
+    outline-offset: 0;
+}
+
+/*.admin-pdf-editor .menu-pdf-decor {
+    position: absolute;
+    width: 25%;
+    max-width: none;
+    opacity: 0.13;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.admin-pdf-editor .menu-pdf-decor--left {
+    top: 16mm;
+    left: 0;
+    transform: translateX(-50%) rotate(-10deg);
+}
+
+.admin-pdf-editor .menu-pdf-decor--right {
+    right: 0;
+    bottom: 16mm;
+    transform: translateX(50%) rotate(168deg);
+}*/
+
+.admin-pdf-editor .menu-pdf-header,
+.admin-pdf-editor .menu-pdf-body,
+.admin-pdf-editor .menu-pdf-footer {
+    position: relative;
+    z-index: 1;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.admin-pdf-editor .menu-pdf-header {
+    text-align: center;
+    padding-bottom: 6mm;
+    border-bottom: 1px solid rgba(43, 33, 26, 0.18);
+}
+
+.admin-pdf-editor .menu-pdf-logo {
+    width: 62mm;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto 4mm;
+}
+
+.admin-pdf-editor .menu-pdf-kicker {
+    font-size: 3.4mm;
+    letter-spacing: 1.2mm;
+    text-transform: uppercase;
+    margin-bottom: 2.5mm;
+}
+
+.admin-pdf-editor .menu-pdf-header h1 {
+    margin: 0;
+    font-size: 11mm;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.8mm;
+}
+
+.admin-pdf-editor .menu-pdf-header p {
+    margin: 3mm auto 0;
+    max-width: 100%;
+    font-size: 3.4mm;
+    line-height: 1.5;
+}
+
+.admin-pdf-editor .menu-pdf-body {
+    margin-top: 6mm;
+}
+
+.admin-pdf-editor .menu-pdf-section {
+    margin-bottom: 6mm;
+}
+
+.admin-pdf-editor .menu-pdf-section h2 {
+    margin: 0 0 3mm;
+    font-size: 6.5mm;
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: 0.4mm;
+    border-bottom: 1px solid rgba(43, 33, 26, 0.25);
+    padding-bottom: 2mm;
+}
+
+.admin-pdf-editor .menu-pdf-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-pdf-editor .menu-pdf-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 4mm;
+    align-items: flex-start;
+    padding: 2.2mm 0;
+    border-bottom: 1px dotted rgba(43, 33, 26, 0.18);
+}
+
+.admin-pdf-editor .menu-pdf-item__main {
+    flex: 1;
+}
+
+.admin-pdf-editor .menu-pdf-item__main h3 {
+    margin: 0;
+    font-size: 4.1mm;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.admin-pdf-editor .menu-pdf-item__main p {
+    margin: 1.2mm 0 0;
+    font-size: 3mm;
+    line-height: 1.4;
+    color: #5b4b40;
+}
+
+.admin-pdf-editor .menu-pdf-item__price {
+    min-width: 16mm;
+    text-align: right;
+    font-size: 4mm;
+    font-weight: bold;
+}
+
+.admin-pdf-editor .menu-pdf-footer {
+    margin-top: 7mm;
+}
+
+.admin-pdf-editor .menu-pdf-footer__band {
+    background: #2b211a;
+    color: #fff;
+    border-radius: 6mm;
+    padding: 4mm 6mm;
+    display: flex;
+    justify-content: space-between;
+    gap: 6mm;
+    align-items: center;
+}
+
+.admin-pdf-editor .menu-pdf-footer__logo {
+    width: 30mm;
+    max-width: 100%;
+}
+
+.admin-pdf-editor .menu-pdf-footer__band span {
+    font-size: 3mm;
+    letter-spacing: 0.5mm;
+    text-transform: uppercase;
+}
+
 @media (max-width: 860px) {
     .admin-orders-header {
         flex-direction: column;
@@ -1026,5 +1270,31 @@ body {
 
     .admin-order-card__actions .btn-small {
         width: 100%;
+    }
+
+    .admin-pdf-toolbar__note {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .admin-pdf-stage {
+        padding: 18px 10px;
+    }
+
+    .admin-pdf-guide-layer,
+    .admin-pdf-editor,
+    .admin-pdf-editor .menu-pdf-source,
+    .admin-pdf-editor .menu-pdf-page {
+        width: 100%;
+    }
+
+    .admin-pdf-editor .menu-pdf-header,
+    .admin-pdf-editor .menu-pdf-body,
+    .admin-pdf-editor .menu-pdf-footer {
+        width: calc(100% - 44px);
+    }
+
+    .admin-pdf-editor .menu-pdf-decor {
+        width: 34%;
     }
 }

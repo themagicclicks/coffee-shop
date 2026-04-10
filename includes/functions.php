@@ -451,6 +451,21 @@ function getPrintableMenuSections() {
     return $sections;
 }
 
+function getMenuPdfTemplateMarkup() {
+    $savedHtml = function_exists('adminClientLoadFormattedMenuPdfHtml')
+        ? adminClientLoadFormattedMenuPdfHtml()
+        : '';
+
+    if (trim((string) $savedHtml) !== '') {
+        return $savedHtml;
+    }
+
+    $menuPdfSections = getPrintableMenuSections();
+    ob_start();
+    include BASE . 'includes/menu-template.php';
+    return (string) ob_get_clean();
+}
+
 ?>
 
 

@@ -651,6 +651,8 @@ document.addEventListener('DOMContentLoaded', function () {
             syncAdminClientEditorsBeforeSubmit(form);
         });
     });
+
+    initAdminPdfLayoutEditor();
 });
 
 function syncAdminClientEditorsBeforeSubmit(form) {
@@ -686,4 +688,157 @@ function findHiddenEditorField(form, fieldName) {
     }
 
     return null;
+}
+
+function initAdminPdfLayoutEditor() {
+    var editorHost = document.getElementById('admin-pdf-menu-editor');
+    if (!editorHost) {
+        return;
+    }
+
+    var initialTemplateHtml = editorHost.innerHTML;
+    if (!initialTemplateHtml) {
+        return;
+    }
+
+    var toolbar = document.querySelector('.admin-pdf-toolbar');
+    var guideLayer = document.querySelector('.admin-pdf-guide-layer');
+    var saveUrl = editorHost.getAttribute('data-save-url') || '';
+    var deleteUrl = editorHost.getAttribute('data-delete-url') || '';
+    var pageHeightPx = Math.round((297 / 25.4) * 96);
+
+    function getTemplateHtml() {
+        return initialTemplateHtml;
+    }
+
+    function getEditablePage() {
+        return editorHost.querySelector('.menu-pdf-page');
+    }
+
+    function getEditableSource() {
+        return editorHost.querySelector('.menu-pdf-source');
+    }
+
+    function bindEditablePage() {
+        var page = getEditablePage();
+        if (!page) {
+            return;
+        }
+
+        page.setAttribute('contenteditable', 'true');
+        page.setAttribute('spellcheck', 'false');
+
+        page.addEventListener('input', refreshGuides);
+        page.addEventListener('keyup', refreshGuides);
+        page.addEventListener('paste', function () {
+            window.setTimeout(refreshGuides, 30);
+        });
+    }
+
+    function renderEditor(html) {
+        editorHost.innerHTML = html || getTemplateHtml();
+        bindEditablePage();
+        refreshGuides();
+    }
+
+    function showToast(message) {
+        if (window.M && window.M.toast) {
+            window.M.toast({ html: message });
+        }
+    }
+
+    function refreshGuides() {
+        if (!guideLayer) {
+            return;
+        }
+
+        var source = getEditableSource();
+        if (!source) {
+            guideLayer.innerHTML = '';
+            return;
+        }
+
+        var contentHeight = Math.max(source.scrollHeight, source.offsetHeight, pageHeightPx);
+        guideLayer.style.height = contentHeight + 'px';
+        guideLayer.innerHTML = '';
+
+        for (var position = pageHeightPx; position <= contentHeight; position += pageHeightPx) {
+            var line = document.createElement('div');
+            line.className = 'admin-pdf-guide-line';
+            line.style.top = position + 'px';
+
+            var label = document.createElement('span');
+            label.className = 'admin-pdf-guide-label';
+            label.textContent = 'A4 Break';
+
+            line.appendChild(label);
+            guideLayer.appendChild(line);
+        }
+    }
+
+    function postPdfLayout(url, payload) {
+        var body = new window.URLSearchParams(payload || {});
+        return window.fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+            },
+            body: body.toString(),
+            credentials: 'same-origin'
+        }).then(function (response) {
+            return response.json();
+        });
+    }
+
+    if (toolbar) {
+        toolbar.addEventListener('click', function (event) {
+            var button = event.target.closest('[data-admin-pdf-action]');
+            if (!button) {
+                return;
+            }
+
+            var action = button.getAttribute('data-admin-pdf-action') || '';
+            if (action === 'save') {
+                var source = getEditableSource();
+                if (source && saveUrl) {
+                    postPdfLayout(saveUrl, { html: source.outerHTML }).then(function (result) {
+                        if (result && result.ok) {
+                            renderEditor(result.html || source.outerHTML);
+                            refreshGuides();
+                            window.setTimeout(refreshGuides, 30);
+                        }
+                        showToast((result && result.message) ? result.message : 'PDF layout could not be saved.');
+                    }).catch(function () {
+                        showToast('PDF layout could not be saved.');
+                    });
+                }
+                return;
+            }
+
+            if (action === 'delete') {
+                if (!deleteUrl) {
+                    return;
+                }
+                postPdfLayout(deleteUrl, {}).then(function (result) {
+                    if (result && result.ok) {
+                        renderEditor(result.html || getTemplateHtml());
+                        refreshGuides();
+                        window.setTimeout(refreshGuides, 30);
+                    }
+                    showToast((result && result.message) ? result.message : 'Saved PDF layout could not be deleted.');
+                }).catch(function () {
+                    showToast('Saved PDF layout could not be deleted.');
+                });
+                return;
+            }
+
+            if (action === 'reset') {
+                renderEditor(getTemplateHtml());
+                showToast('Preview reset to the live template.');
+            }
+        });
+    }
+
+    renderEditor(getTemplateHtml());
+    window.addEventListener('resize', refreshGuides);
 }

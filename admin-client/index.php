@@ -29,16 +29,26 @@ $routes = [
         'file' => __DIR__ . '/orders.php',
         'title' => 'Orders',
     ],
+    'pdf-layout' => [
+        'file' => __DIR__ . '/pdf_layout.php',
+        'title' => 'PDF Layout',
+    ],
 ];
 
 $currentPage = array_key_exists($requestedPage, $routes) ? $requestedPage : 'dashboard';
 $pageFile = $routes[$currentPage]['file'];
 $pageTitle = $routes[$currentPage]['title'];
+$pageStyles = '';
 
 if ($currentSection !== '') {
     $pageFile = __DIR__ . '/section.php';
     $sectionMenuItem = adminClientFindMenuItemByEntityType($config['menu'], $currentSection);
     $pageTitle = $sectionMenuItem['label'] ?? 'Section';
+}
+
+if ($currentPage === 'pdf-layout') {
+    $activeThemeName = htmlspecialchars((string) ($config['theme_name'] ?? 'dark-coffee'), ENT_QUOTES, 'UTF-8');
+    $pageStyles .= '<link rel="stylesheet" href="../themes/' . $activeThemeName . '/css/styles.css">';
 }
 
 if (!adminClientPathIsAllowed($requestUri, $config['admin_path'])) {

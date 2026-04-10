@@ -109,5 +109,12 @@ $availableCurrencies = adminClientAllowedCurrencies();
                 </label>
             </div>
         </div>
+
+        <div class="admin-card">
+            <div class="card-label">PDF Settings</div>
+            <h4 style="margin-top: 0;">Menu PDF Layout</h4>
+            <p class="helper-note">Open the PDF Layout page to preview the menu inside A4 break guides, then nudge content spacing manually before exporting.</p>
+            <a href="index.php?page=pdf-layout" class="btn brown">Open PDF Layout</a>
+        </div>
     </form>
 </section>

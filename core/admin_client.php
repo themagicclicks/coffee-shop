@@ -332,6 +332,51 @@ function adminClientSaveConfig($configFile, $updates) {
     return file_put_contents($configFile, $json . PHP_EOL) !== false;
 }
 
+function adminClientFormattedMenuPdfPath() {
+    return dirname(__DIR__) . '/cache/formatted-menu-pdf.html';
+}
+
+function adminClientLoadFormattedMenuPdfHtml() {
+    $file = adminClientFormattedMenuPdfPath();
+    if (!is_file($file) || !is_readable($file)) {
+        return '';
+    }
+
+    $html = file_get_contents($file);
+    return $html === false ? '' : (string) $html;
+}
+
+function adminClientSaveFormattedMenuPdfHtml($html) {
+    $html = trim((string) $html);
+    if ($html === '' || stripos($html, 'menu-pdf-source') === false) {
+        return false;
+    }
+
+    $html = preg_replace('#<script\b[^>]*>.*?</script>#is', '', $html);
+    $html = preg_replace('/\scontenteditable="[^"]*"/i', '', $html);
+    $html = preg_replace('/\sspellcheck="[^"]*"/i', '', $html);
+    $html = preg_replace(
+        '/(<[^>]*class="[^"]*\bmenu-pdf-source\b[^"]*"[^>]*?)\sstyle="[^"]*"/i',
+        '$1',
+        $html
+    );
+    $cacheDir = dirname(adminClientFormattedMenuPdfPath());
+    if (!is_dir($cacheDir)) {
+        mkdir($cacheDir, 0755, true);
+    }
+
+    return file_put_contents(adminClientFormattedMenuPdfPath(), $html . PHP_EOL) !== false;
+}
+
+function adminClientDeleteFormattedMenuPdfHtml() {
+    $file = adminClientFormattedMenuPdfPath();
+    if (!is_file($file)) {
+        return true;
+    }
+
+    return unlink($file);
+}
+
 function adminClientAllowedPaths($adminPath, $fallbackPath = 'admin-client') {
     $paths = [adminClientSanitizePath($fallbackPath), adminClientSanitizePath($adminPath)];
     return array_values(array_unique($paths));

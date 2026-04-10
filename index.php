@@ -101,21 +101,20 @@ if (!empty($entityName)) {
             $entities = getMatchingEntities($entityType."-",'','','',''); //get entities from all entity types that start with ... e.g. menu-
             //var_dump($entities);
             echo "<div class=\"row block dark-coffee list-page\"><div class=\"vertical-spacer\"></div><div class=\"col s12 full\">".renderPageSnippet($entityType)."</div>";
-            if ($entityType === 'menu') {
-                echo '<div class="container"><div class="col s12 full menu-download-row"><a href="#!" class="btn-large waves-effect waves-light brown download-menu-btn"><i class="material-icons left">picture_as_pdf</i>Download Menu</a></div></div>';
-            }
+            //if ($entityType === 'menu') {
+            //    echo '<div class="container"><div class="col s12 full menu-download-row"><a href="#!" class="btn-large waves-effect waves-light brown download-menu-btn"><i class="material-icons left" style="margin-right:38px;">picture_as_pdf</i>Download Menu</a></div></div>';
+            //}
             // Render entity previews in a grid
-            echo "<div class=\"vertical-spacer\"></div><h1 class=\"center page-title col s12\">".ucfirst($entityType)."</h1><div class=\"vertical-spacer\"></div><div class=\"container\"><div class=\"col s12 full\"><ul class=\"bespokeproducts ".$entityType."\">";
+            echo "<!--<div class=\"vertical-spacer\"></div>--><h1 class=\"center page-title col s12\">".ucfirst($entityType).(($entityType === 'menu')?'<a href="#!" class="download-menu-btn"><i class="material-icons left" style="margin-right:38px;">file_download</i></a>':'')."</h1><div class=\"vertical-spacer\"></div><div class=\"container\"><div class=\"col s12 full\"><ul class=\"bespokeproducts ".$entityType."\">";
             foreach ($entities as $entity) {
                 echo replaceSitePlaceholder($entity['rendered_html']);
             }
             echo "</ul>";
             echo renderPageSnippet("home-page-captions");
-            echo "</ul><div class=\"vertical-spacer\"></div><div class=\"vertical-spacer\"></div></div></div></div>";
-            echo "<div class=\"row block dark-coffee page-quote\"><div class=\"container\"><div class=\"vertical-spacer\"></div><div class=\"col s12 m7 l7\">".renderPageSnippet("product-page-features")."</div><div class=\"col s12 m5 l5 quote\">".renderPageSnippet("reservation-request-form")."</div></div></div>";
+            echo "</ul><div class=\"vertical-spacer\"></div><!--<div class=\"vertical-spacer\"></div>--></div></div></div>";
+			echo "<div class=\"row block dark-coffee page-quote\"><div class=\"container\"><div class=\"vertical-spacer\"></div><div class=\"col s12 m7 l7\">".renderPageSnippet("product-page-features")."</div><div class=\"col s12 m5 l5 quote\">".renderPageSnippet("reservation-request-form")."</div></div></div>";
 			if ($entityType === 'menu') {
-                $menuPdfSections = getPrintableMenuSections();
-                include BASE . 'includes/menu-template.php';
+                echo getMenuPdfTemplateMarkup();
             }
 		}else{
 			echo renderPageSnippet("home-page-captions");
