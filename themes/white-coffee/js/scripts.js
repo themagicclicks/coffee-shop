@@ -50,6 +50,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     var requirements = document.querySelectorAll('textarea#specifics');
     M.CharacterCounter.init(requirements);
+    normalizeFrontendFormFieldIds();
+    initMaterializeTextFieldLabels();
     
     const elems = document.querySelectorAll('.carousel');
     M.Carousel.init(elems, {
@@ -1622,3 +1624,75 @@ function initTableMenuOrdering() {
 }
 
 document.addEventListener('DOMContentLoaded', initTableMenuOrdering);
+
+function initMaterializeTextFieldLabels() {
+    if (window.M && typeof window.M.updateTextFields === 'function') {
+        window.M.updateTextFields();
+    }
+
+    document.querySelectorAll('.input-field label[for]').forEach(function(label) {
+        if (label.dataset.labelBound === '1') {
+            return;
+        }
+
+        label.dataset.labelBound = '1';
+        label.addEventListener('click', function() {
+            var targetId = label.getAttribute('for');
+            if (!targetId) {
+                return;
+            }
+
+            var field = null;
+            var inputField = label.closest('.input-field');
+            if (inputField) {
+                field = inputField.querySelector('#' + cssEscapeIdentifier(targetId) + ', input, textarea, select');
+            }
+            if (!field) {
+                field = document.getElementById(targetId);
+            }
+            if (!field) {
+                return;
+            }
+
+            label.classList.add('active');
+            field.focus();
+            window.setTimeout(function() {
+                label.classList.add('active');
+                field.focus();
+                if (window.M && typeof window.M.updateTextFields === 'function') {
+                    window.M.updateTextFields();
+                }
+            }, 0);
+        });
+    });
+}
+
+function normalizeFrontendFormFieldIds() {
+    document.querySelectorAll('.input-field label[for]').forEach(function(label, labelIndex) {
+        var targetId = label.getAttribute('for');
+        if (!targetId) {
+            return;
+        }
+
+        var inputField = label.closest('.input-field');
+        if (!inputField) {
+            return;
+        }
+
+        var field = inputField.querySelector('#' + cssEscapeIdentifier(targetId) + ', input, textarea, select');
+        if (!field) {
+            return;
+        }
+
+        var uniqueId = targetId + '--fld-' + labelIndex;
+        field.id = uniqueId;
+        label.setAttribute('for', uniqueId);
+    });
+}
+
+function cssEscapeIdentifier(value) {
+    if (window.CSS && typeof window.CSS.escape === 'function') {
+        return window.CSS.escape(value);
+    }
+    return String(value).replace(/([ #;?%&,.+*~\\':"!^$[\]()=>|\/@])/g, '\\$1');
+}

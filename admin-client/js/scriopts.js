@@ -152,7 +152,8 @@ function initAdminClientEditors() {
             return;
         }
 
-        var html = state.contentElement.innerHTML;
+        neutralizeEmbeddedEditorControls(state.contentElement);
+        var html = getSanitizedEditorHtml(state.contentElement.innerHTML);
         state.hiddenTextarea.value = html;
         if (state.htmlTextarea && document.activeElement !== state.htmlTextarea) {
             state.htmlTextarea.value = html;
@@ -165,11 +166,41 @@ function initAdminClientEditors() {
             return;
         }
 
-        var html = state.htmlTextarea.value;
+        var html = getSanitizedEditorHtml(state.htmlTextarea.value);
         state.hiddenTextarea.value = html;
         if (state.contentElement) {
             state.contentElement.innerHTML = html;
+            neutralizeEmbeddedEditorControls(state.contentElement);
         }
+    }
+
+    function neutralizeEmbeddedEditorControls(container) {
+        if (!container) {
+            return;
+        }
+
+        container.querySelectorAll('input, select, textarea, button, form').forEach(function (control) {
+            control.disabled = true;
+            control.removeAttribute('required');
+            control.removeAttribute('name');
+            control.removeAttribute('form');
+            control.removeAttribute('pattern');
+            control.setAttribute('tabindex', '-1');
+            control.setAttribute('aria-hidden', 'true');
+        });
+    }
+
+    function getSanitizedEditorHtml(html) {
+        var wrapper = document.createElement('div');
+        wrapper.innerHTML = String(html || '');
+        wrapper.querySelectorAll('input, select, textarea, button, form').forEach(function (control) {
+            control.removeAttribute('disabled');
+            control.removeAttribute('tabindex');
+            control.removeAttribute('aria-hidden');
+            control.removeAttribute('contenteditable');
+            control.removeAttribute('spellcheck');
+        });
+        return wrapper.innerHTML;
     }
 
     function insertHtmlAtCursor(state, html) {
@@ -550,7 +581,7 @@ function initAdminClientEditors() {
         state.htmlTextarea = textarea;
         textarea.addEventListener('input', function () {
             if (state.hiddenTextarea) {
-                state.hiddenTextarea.value = textarea.value;
+                state.hiddenTextarea.value = getSanitizedEditorHtml(textarea.value);
             }
         });
     });
@@ -582,10 +613,10 @@ function initAdminClientEditors() {
             element: editorElement,
             onChange: function (html) {
                 if (state.hiddenTextarea) {
-                    state.hiddenTextarea.value = html;
+                    state.hiddenTextarea.value = getSanitizedEditorHtml(html);
                 }
                 if (state.htmlTextarea && document.activeElement !== state.htmlTextarea) {
-                    state.htmlTextarea.value = html;
+                    state.htmlTextarea.value = getSanitizedEditorHtml(html);
                 }
             },
             actions: [
@@ -626,8 +657,10 @@ function initAdminClientEditors() {
         state.contentElement = editorElement.querySelector('.pell-content');
         if (state.contentElement) {
             state.contentElement.innerHTML = initialHtml;
+            neutralizeEmbeddedEditorControls(state.contentElement);
             ['mouseup', 'keyup', 'focus', 'input'].forEach(function (eventName) {
                 state.contentElement.addEventListener(eventName, function () {
+                    neutralizeEmbeddedEditorControls(state.contentElement);
                     saveSelection(state);
                     syncStateFromVisual(state);
                 });
@@ -668,7 +701,7 @@ function syncAdminClientEditorsBeforeSubmit(form) {
 
         var hiddenTextarea = findHiddenEditorField(form, fieldName);
         if (hiddenTextarea) {
-            hiddenTextarea.value = textarea.value;
+            hiddenTextarea.value = getSanitizedEditorHtml(textarea.value);
         }
     });
 

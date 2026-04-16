@@ -38,6 +38,20 @@ function adminClientTruthyValue($value) {
     return in_array($value, ['1', 'true', 'yes', 'on'], true);
 }
 
+function adminClientStripEditorOnlyHtmlAttributes($value) {
+    $value = (string) $value;
+    if (stripos($value, '<') === false) {
+        return $value;
+    }
+
+    $value = preg_replace('/\sdisabled(?:="[^"]*")?/i', '', $value);
+    $value = preg_replace('/\stabindex="[^"]*"/i', '', $value);
+    $value = preg_replace('/\saria-hidden="[^"]*"/i', '', $value);
+    $value = preg_replace('/\scontenteditable="[^"]*"/i', '', $value);
+    $value = preg_replace('/\sspellcheck="[^"]*"/i', '', $value);
+    return $value;
+}
+
 $config = loadAdminClientConfig(__DIR__ . '/../config/admin_client.json');
 $requestUri = $_SERVER['REQUEST_URI'] ?? '';
 $section = trim((string) ($_GET['section'] ?? $_POST['entity_type_name'] ?? ''));
@@ -121,7 +135,7 @@ foreach ($attributes as $attribute) {
         $value = json_encode($value);
     }
 
-    $value = (string) $value;
+    $value = adminClientStripEditorOnlyHtmlAttributes((string) $value);
     if ($section === 'home-page' && $attributeName === 'is_current_home') {
         $currentHomeSelected = adminClientTruthyValue($value);
     }

@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fullWidth: true,
         indicators: true
     });
-    document.body.style.opacity = "1";
+    //document.body.style.opacity = "1";
     function equalizeHeights() {
         document.querySelectorAll('.container').forEach(container => {
             let lefts = container.querySelectorAll('.left');
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
 
     const captionEl = document.getElementById('caption');
-const captionItems = document.querySelectorAll('#captions li');
+	const captionItems = document.querySelectorAll('#captions li');
 
     let captions = [];
     
@@ -125,10 +125,14 @@ const captionItems = document.querySelectorAll('#captions li');
     const hamburger = document.querySelector('.hamburger');
     const menu = document.querySelector('.open-menu');
     
-    hamburger.addEventListener('click', () => {
-      menu.classList.toggle('active');
-      hamburger.classList.toggle('active');
-    });
+    if (hamburger && menu) {
+        hamburger.addEventListener('click', () => {
+          menu.classList.toggle('active');
+          hamburger.classList.toggle('active');
+        });
+    }
+
+    initMinimalLavaMenu();
     const downloadMenuBtn = document.querySelector('.download-menu-btn');
     if (downloadMenuBtn) {
         downloadMenuBtn.addEventListener('click', function (event) {
@@ -155,11 +159,12 @@ const captionItems = document.querySelectorAll('#captions li');
     const cartbutton = document.querySelector('.cart-btn');
     const cartbox = document.querySelector('.open-cart');
     
-    cartbutton.addEventListener('click', () => {
-      populateCart();  
-      cartbox.classList.toggle('active');
-      
-    });
+    if (cartbutton && cartbox) {
+        cartbutton.addEventListener('click', () => {
+          populateCart();  
+          cartbox.classList.toggle('active');
+        });
+    }
     
     const carttmr = setInterval(function() {
         let total = 0;
@@ -254,6 +259,12 @@ const captionItems = document.querySelectorAll('#captions li');
       
       //rotateHtmlSlider();
       setInterval(rotateHtmlSlider, 6000);
+	  const element = document.getElementById('caption');
+	  const newParent = document.getElementsByClassName('htmlslider')[0];
+
+	  if (element && newParent) {
+		  newParent.insertBefore(element, newParent.firstChild);
+	  }
 });
 window.addEventListener("load", function() {
     console.log("Page fully loaded!");
@@ -1603,6 +1614,54 @@ function handleOrderIconClick(event) {
         }
 
         openStoredOrderDialog(order, status);
+    });
+}
+
+function initMinimalLavaMenu() {
+    const menu = document.querySelector('.minimal-lava-menu');
+    const lamp = menu ? menu.querySelector('.lava-lamp') : null;
+    if (!menu || !lamp) {
+        return;
+    }
+
+    const links = Array.from(menu.querySelectorAll('a'));
+    if (!links.length) {
+        return;
+    }
+
+    function moveLamp(target) {
+        if (!target) {
+            return;
+        }
+
+        const menuRect = menu.getBoundingClientRect();
+        const targetRect = target.getBoundingClientRect();
+        lamp.style.width = targetRect.width + 'px';
+        lamp.style.transform = 'translateX(' + (targetRect.left - menuRect.left) + 'px)';
+        lamp.style.opacity = '1';
+    }
+
+    const activeLink = links.find(function (link) {
+        return link.classList.contains('is-current');
+    }) || links[0];
+
+    moveLamp(activeLink);
+
+    links.forEach(function (link) {
+        link.addEventListener('mouseenter', function () {
+            moveLamp(link);
+        });
+        link.addEventListener('focus', function () {
+            moveLamp(link);
+        });
+    });
+
+    menu.addEventListener('mouseleave', function () {
+        moveLamp(activeLink);
+    });
+
+    window.addEventListener('resize', function () {
+        moveLamp(activeLink);
     });
 }
 

@@ -19,6 +19,7 @@ $entityType = isset($_GET['entitytype']) ? urldecode($_GET['entitytype']) : '';
 $entityName = isset($_GET['entityname']) ? urldecode($_GET['entityname']) : '';
 //$entityType = isset($_GET['entitytype']) ? urldecode($_GET['entitytype']) : '';
 //$entityName = isset($_GET['entityname']) ? urldecode($_GET['entityname']) : '';
+//var_dump($entityType,$entityName);
 include_once BASE.'includes/header.php';
 
 

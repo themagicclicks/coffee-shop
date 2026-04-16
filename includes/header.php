@@ -26,6 +26,7 @@ $topNavItems = $frontendNavigation['top_nav'] ?? [];
 $openMenuItems = $frontendNavigation['open_menu'] ?? [];
 $activeTheme = getActiveThemeName();
 $themeHeader = BASE . "themes/$activeTheme/partial_header.php";
+
 //var_dump($themeHeader);
 if (file_exists($themeHeader)) {
     include $themeHeader;
