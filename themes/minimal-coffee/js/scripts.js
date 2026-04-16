@@ -122,17 +122,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Cycle every 6 seconds
     setInterval(showNextCaption, 10000);
     
-    const hamburger = document.querySelector('.hamburger');
-    const menu = document.querySelector('.open-menu');
-    
-    if (hamburger && menu) {
-        hamburger.addEventListener('click', () => {
-          menu.classList.toggle('active');
-          hamburger.classList.toggle('active');
-        });
-    }
-
     initMinimalLavaMenu();
+    initMinimalMobileMenu();
     const downloadMenuBtn = document.querySelector('.download-menu-btn');
     if (downloadMenuBtn) {
         downloadMenuBtn.addEventListener('click', function (event) {
@@ -1663,6 +1654,54 @@ function initMinimalLavaMenu() {
     window.addEventListener('resize', function () {
         moveLamp(activeLink);
     });
+}
+
+function initMinimalMobileMenu() {
+    const hamburger = document.querySelector('.minimal-menu-toggle');
+    const menu = document.querySelector('.minimal-open-menu');
+    if (!hamburger || !menu) {
+        return;
+    }
+
+    function setMenuState(isOpen) {
+        menu.classList.toggle('active', isOpen);
+        hamburger.classList.toggle('active', isOpen);
+        hamburger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+
+    function toggleMenu(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        setMenuState(!menu.classList.contains('active'));
+    }
+
+    hamburger.addEventListener('click', toggleMenu);
+
+    menu.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+            setMenuState(false);
+        });
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!menu.classList.contains('active')) {
+            return;
+        }
+        if (menu.contains(event.target) || hamburger.contains(event.target)) {
+            return;
+        }
+        setMenuState(false);
+    });
+
+    window.addEventListener('resize', function () {
+        if (!window.matchMedia('(max-width: 992px)').matches) {
+            setMenuState(false);
+        }
+    });
+
+    setMenuState(false);
 }
 
 function initTableMenuOrdering() {

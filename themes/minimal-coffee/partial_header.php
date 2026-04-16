@@ -37,6 +37,11 @@
     <title><?php echo htmlspecialchars($siteTitle, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></title>
 </head>
 <body class="<?php echo htmlspecialchars($bodyClass, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?> <?php echo (($entityType!=='')?$entityType:'home'); ?> <?php echo (($entityName!=='')?$entityName:''); ?>">
+    <?php
+    $currentEntityType = trim((string) ($entityType ?? ''));
+    $currentEntityName = trim((string) ($entityName ?? ''));
+    $isHomeContext = ($currentEntityType === '' || $currentEntityType === 'home-page');
+    ?>
     <div class="no-background vertical-spacer"></div>
     <nav class="no-background minimal-nav-shell">
         <div class="nav-wrapper container topnav minimal-topnav">
@@ -46,14 +51,25 @@
 
             <ul class="hide-on-med-and-down minimal-lava-menu">
                 <span class="lava-lamp" aria-hidden="true"></span>
-                <?php foreach ($topNavItems as $index => $navItem) {
+                <?php foreach ($topNavItems as $navItem) {
                     $href = (string) ($navItem['href'] ?? '');
                     $isAbsolute = preg_match('#^(https?:)?//#i', $href) === 1;
                     $resolvedHref = $isAbsolute ? $href : SITE . ltrim($href, '/');
+                    $path = trim((string) (parse_url($href, PHP_URL_PATH) ?? $href), '/');
+                    $segments = $path === '' ? [] : explode('/', $path);
+                    $isCurrent = false;
+
+                    if (empty($segments)) {
+                        $isCurrent = $isHomeContext;
+                    } elseif (count($segments) === 1) {
+                        $isCurrent = ($currentEntityType === $segments[0]);
+                    } else {
+                        $isCurrent = ($currentEntityType === $segments[0] && $currentEntityName === ($segments[1] ?? ''));
+                    }
                 ?>
                     <li>
                         <a
-                            class="<?php echo $class; ?><?php echo $index === 0 ? ' is-current' : ''; ?>"
+                            class="<?php echo $class; ?><?php echo $isCurrent ? ' is-current' : ''; ?>"
                             href="<?php echo htmlspecialchars($resolvedHref, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>"
                             target="<?php echo htmlspecialchars((string) ($navItem['target'] ?? '_top'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>"
                         ><?php echo htmlspecialchars((string) ($navItem['label'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></a>
@@ -75,7 +91,7 @@
 
     <div class="open-menu minimal-open-menu">
         <img src="<?php echo SITE; ?>images/willow-cup-coffee-black.svg" alt="Willow Cup Coffee">
-        <?php foreach ($openMenuItems as $navItem) {
+        <?php foreach ($topNavItems as $navItem) {
             $href = (string) ($navItem['href'] ?? '');
             $isAbsolute = preg_match('#^(https?:)?//#i', $href) === 1;
             $resolvedHref = $isAbsolute ? $href : SITE . ltrim($href, '/');

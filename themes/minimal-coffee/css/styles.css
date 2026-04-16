@@ -247,6 +247,7 @@ div.row.list-page {
 	font-size: 3.6rem;
 	text-transform: uppercase;
 	font-weight: bold;
+	word-wrap: anywhere;
 }
 div.homepagequoteformselect input:not(.select-month input):not(.select-year input),
 div.homepagequoteformselect textarea {
@@ -2129,15 +2130,30 @@ ul.bespokeproducts.menu li a div,
 		margin: 10px 0;
 		width: 100% !important;
 	}
-	
+	h3.caption{
+		word-wrap: anywhere;
+	}
 	div.row.coffee-banner {
 		background-image: none;
+		float: left;
+		width: 100%;
 	}
 	a.transparent-image{
 		
 	}
 	a.transparent-image img {
 		width: 100%;
+	}
+	.quote h2 {
+		font-size: 2.6rem;
+	}
+	.row.block.homevideo {
+		float: left;
+		margin: 40px 0 0 0;
+		text-align: center;
+	}
+	div.shop{
+		float:none;
 	}
 	a.link-text {
 		position: absolute;
@@ -2307,6 +2323,14 @@ ul.bespokeproducts.menu li a div,
 	}
 	ul.menu-section-list li a h5{
 		overflow:hidden;
+	}
+	ul.shopproducts .quantity-selector, .add-to-cart .quantity-selector {
+		position: relative;
+		float: left;
+		color: #FFF;
+		width: 50%;
+		text-align: center;
+		margin: 0 auto !important;
 	}
 }
 
@@ -2542,7 +2566,9 @@ body.minimal-coffee .order-btn {
 }
 
 body.minimal-coffee .open-menu.minimal-open-menu {
-    top: 92px;
+	top: 32px;
+	position: fixed;
+	width: 280px;
 }
 
 body.minimal-coffee h1.logo {
@@ -2639,6 +2665,59 @@ body.minimal-coffee .page-footer li a {
         align-items: center;
         justify-content: center;
     }
+
+    body.minimal-coffee .minimal-nav-actions {
+        gap: 8px;
+        padding-right: 52px;
+        position: relative;
+    }
+
+    body.minimal-coffee .minimal-menu-toggle {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        z-index: 3;
+    }
+
+    body.minimal-coffee .minimal-menu-toggle .bar,
+    body.minimal-coffee .minimal-menu-toggle .bar.dark {
+        width: 100%;
+        height: 3px;
+        display: block;
+        margin: 0;
+        border-radius: 999px;
+        background: #f6ece0 !important;
+        opacity: 1;
+        text-indent: 0;
+        position: relative;
+        transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    body.minimal-coffee a.cart-btn,
+    body.minimal-coffee .order-btn {
+        position: relative;
+        right: auto;
+        top: auto;
+    }
+
+    body.minimal-coffee .minimal-menu-toggle.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    body.minimal-coffee .minimal-menu-toggle.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    body.minimal-coffee .minimal-menu-toggle.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
 }
 
 @media (max-width: 768px) {
@@ -2661,4 +2740,5 @@ body.minimal-coffee .page-footer li a {
     body.minimal-coffee h1.page-title {
         font-size: 2.8rem;
     }
+	
 }
