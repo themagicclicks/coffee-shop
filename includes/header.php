@@ -33,6 +33,8 @@ if (file_exists($themeHeader)) {
 } else {
     include BASE . "includes/partial_header.php";
 }
+
+include_once BASE . 'includes/theme_demo_switcher.php';
 ?>
 
 

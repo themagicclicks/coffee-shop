@@ -63,6 +63,121 @@ function adminClientNormalizeThemeName($themeName) {
     return $themeName !== '' ? $themeName : 'dark-coffee';
 }
 
+function adminClientAvailableThemes($themesDir = null) {
+    $themesDir = $themesDir ?: dirname(__DIR__) . '/themes';
+    $themes = [];
+
+    if (!is_dir($themesDir)) {
+        return ['dark-coffee'];
+    }
+
+    foreach (scandir($themesDir) ?: [] as $entry) {
+        if ($entry === '.' || $entry === '..') {
+            continue;
+        }
+
+        if (is_dir($themesDir . '/' . $entry)) {
+            $themes[] = adminClientNormalizeThemeName($entry);
+        }
+    }
+
+    $themes = array_values(array_unique(array_filter($themes)));
+    sort($themes, SORT_NATURAL | SORT_FLAG_CASE);
+
+    return !empty($themes) ? $themes : ['dark-coffee'];
+}
+
+function adminClientThemeHomepageMap() {
+    return [
+        'dark-coffee' => 'home',
+        'light-coffee' => 'home',
+        'white-coffee' => 'home-two',
+        'minimal-coffee' => 'home-3',
+    ];
+}
+
+function adminClientThemeHomepageName($themeName) {
+    $themeName = adminClientNormalizeThemeName($themeName);
+    $map = adminClientThemeHomepageMap();
+    return $map[$themeName] ?? 'home';
+}
+
+function adminClientSetCurrentHomePageForTheme($themeName) {
+    $themeName = adminClientNormalizeThemeName($themeName);
+    $homePageName = adminClientThemeHomepageName($themeName);
+
+    $entityTypeRows = getEntityTypeByName('home-page');
+    if (empty($entityTypeRows) || empty($entityTypeRows[0]['id'])) {
+        return [
+            'success' => false,
+            'message' => 'Home page entity type not found.',
+        ];
+    }
+
+    $homePageTypeId = (int) $entityTypeRows[0]['id'];
+    $attributeRows = getAttributeByName('is_current_home');
+    if (empty($attributeRows) || empty($attributeRows[0]['id'])) {
+        return [
+            'success' => false,
+            'message' => 'is_current_home attribute not found.',
+        ];
+    }
+
+    $currentHomeAttributeId = (int) $attributeRows[0]['id'];
+    $targetEntityRows = getEntityByNameAndTypeId($homePageName, $homePageTypeId);
+    if (empty($targetEntityRows) || empty($targetEntityRows[0]['id'])) {
+        return [
+            'success' => false,
+            'message' => 'Mapped home page entity not found for theme.',
+        ];
+    }
+
+    $targetEntityId = (int) $targetEntityRows[0]['id'];
+    clearTruthyAttributeFromOtherEntities($homePageTypeId, $currentHomeAttributeId, $targetEntityId);
+    setEntityAttributeValue($targetEntityId, $currentHomeAttributeId, 'on');
+
+    return [
+        'success' => true,
+        'message' => 'Homepage updated.',
+        'home_page_name' => $homePageName,
+        'entity_id' => $targetEntityId,
+    ];
+}
+
+function adminClientApplyThemeSelection($themeName, $configFile) {
+    $themeName = adminClientNormalizeThemeName($themeName);
+    $availableThemes = adminClientAvailableThemes();
+
+    if (!in_array($themeName, $availableThemes, true)) {
+        return [
+            'success' => false,
+            'message' => 'Invalid theme selected.',
+        ];
+    }
+
+    if (!adminClientSaveConfig($configFile, ['theme_name' => $themeName])) {
+        return [
+            'success' => false,
+            'message' => 'Unable to save theme settings.',
+        ];
+    }
+
+    $homePageUpdate = adminClientSetCurrentHomePageForTheme($themeName);
+    if (empty($homePageUpdate['success'])) {
+        return [
+            'success' => false,
+            'message' => (string) ($homePageUpdate['message'] ?? 'Unable to update homepage.'),
+        ];
+    }
+
+    return [
+        'success' => true,
+        'message' => 'Theme updated successfully.',
+        'theme_name' => $themeName,
+        'home_page_name' => $homePageUpdate['home_page_name'] ?? adminClientThemeHomepageName($themeName),
+    ];
+}
+
 function adminClientAllowedCurrencies() {
     return ['USD', 'INR', 'EUR', 'GBP', 'AED'];
 }
