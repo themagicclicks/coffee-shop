@@ -2036,6 +2036,33 @@ ul.bespokeproducts.menu li a div,
 }
 @media (max-width: 768px) { 
 
+	html,
+	body {
+		width: 100%;
+		max-width: 100%;
+		overflow-x: hidden;
+		padding-top:60px;
+	}
+	.row,
+	.row.block,
+	.row.all-pages,
+	.block-first,
+	.hero,
+	.open-menu,
+	.open-cart,
+	.order-modal-overlay,
+	.order-summary-modal {
+		max-width: 100vw;
+		overflow-x: hidden;
+		
+	}
+	.row.all-pages{
+		width:100%;
+	}
+	.row {
+		margin-left: 0;
+		margin-right: 0;
+	}
 	.hero{
 		background-image: unset;
 	}
@@ -2069,7 +2096,7 @@ ul.bespokeproducts.menu li a div,
 		height: auto;
 		position: relative;
 		float: left;
-		padding: 20px 0;
+		padding: 40px;
 	}
 	.row.all-pages h1.logo img {
 		width: 100%;
@@ -2229,6 +2256,9 @@ ul.bespokeproducts.menu li a div,
 	}
 	figcaption, figure, main {
 		color: #FFF;
+	}
+	.quote h2{
+		font-size:3.2rem;
 	}
 	.feature-list h5 {
 		text-align: left;
