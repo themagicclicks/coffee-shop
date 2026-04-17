@@ -22,9 +22,9 @@ $ogTitle = $siteConfig['og_title'] ?? $siteTitle;
 $ogDescription = $siteConfig['og_description'] ?? $metaDescription;
 $ogUrl = $siteConfig['og_url'] ?? SITE;
 $frontendNavigation = $siteConfig['frontend_navigation'] ?? ['top_nav' => [], 'open_menu' => []];
-$topNavItems = $frontendNavigation['top_nav'] ?? [];
-$openMenuItems = $frontendNavigation['open_menu'] ?? [];
 $activeTheme = getActiveThemeName();
+$topNavItems = adminClientFilterFrontendNavigationItemsByTheme($frontendNavigation['top_nav'] ?? [], $activeTheme);
+$openMenuItems = adminClientFilterFrontendNavigationItemsByTheme($frontendNavigation['open_menu'] ?? [], $activeTheme);
 $themeHeader = BASE . "themes/$activeTheme/partial_header.php";
 
 //var_dump($themeHeader);

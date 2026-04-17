@@ -150,31 +150,51 @@
                 "name": "home",
                 "label": "Home",
                 "href": "/",
-                "target": "_top"
+                "target": "_top",
+                "theme": [
+                    "ALL"
+                ],
+                "visibility": "ALL"
             },
             {
                 "name": "menu",
                 "label": "Menu",
                 "href": "menu/",
-                "target": "_top"
+                "target": "_top",
+                "theme": [
+                    "ALL"
+                ],
+                "visibility": "ALL"
             },
             {
                 "name": "shop",
                 "label": "Shop",
                 "href": "shop/",
-                "target": "_top"
+                "target": "_top",
+                "theme": [
+                    "ALL"
+                ],
+                "visibility": "ALL"
             },
             {
                 "name": "about",
                 "label": "About",
                 "href": "pages/about-us/",
-                "target": "_top"
+                "target": "_top",
+                "theme": [
+                    "ALL"
+                ],
+                "visibility": "ALL"
             },
             {
                 "name": "visit-us",
                 "label": "Visit Us",
                 "href": "pages/visit-us/",
-                "target": "_top"
+                "target": "_top",
+                "theme": [
+                    "ALL"
+                ],
+                "visibility": "ALL"
             }
         ],
         "open_menu": [
@@ -182,19 +202,41 @@
                 "name": "home",
                 "label": "Home",
                 "href": "/",
-                "target": "_top"
+                "target": "_top",
+                "theme": [
+                    "ALL"
+                ],
+                "visibility": "ALL"
             },
             {
                 "name": "about-us",
                 "label": "About Us",
                 "href": "pages/about-us/",
-                "target": "_top"
+                "target": "_top",
+                "theme": [
+                    "ALL"
+                ],
+                "visibility": "ALL"
             },
             {
                 "name": "visit-us",
                 "label": "Visit Us",
                 "href": "pages/visit-us/",
-                "target": "_top"
+                "target": "_top",
+                "theme": [
+                    "ALL"
+                ],
+                "visibility": "ALL"
+            },
+            {
+                "name": "menu",
+                "label": "Menu",
+                "href": "menu/",
+                "target": "_top",
+                "theme": [
+                    "ALL"
+                ],
+                "visibility": "MOBILE_ONLY"
             }
         ]
     }

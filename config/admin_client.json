@@ -136,7 +136,7 @@
     "two_step_email_otp_enabled": false,
     "frontend_form_email": "themagicclicks@gmail.com",
     "currency_code": "USD",
-    "theme_name": "dark-coffee",
+    "theme_name": "light-coffee",
     "site_title": "Willow Cup Coffee - The Community Peace Spot",
     "meta_description": "Small Moments, Great Coffee - Pause, sip, and enjoy the simple pleasures.",
     "meta_keywords": "Coffee shop,Cafe Coffee near me,Open now,Specialty coffee,Specialty coffee shop,Espresso, Cappuccino, Latte, Coffee roasters,Roasted coffee, Best cold brew, Brooklyn, Maple Avenue, cafe with wifi, Quiet coffee shop to study, Coffee shop with outdoor seating ,Organic/fair trade coffee",
@@ -150,31 +150,51 @@
                 "name": "home",
                 "label": "Home",
                 "href": "/",
-                "target": "_top"
+                "target": "_top",
+                "theme": [
+                    "ALL"
+                ],
+                "visibility": "ALL"
             },
             {
                 "name": "menu",
                 "label": "Menu",
                 "href": "menu/",
-                "target": "_top"
+                "target": "_top",
+                "theme": [
+                    "ALL"
+                ],
+                "visibility": "ALL"
             },
             {
                 "name": "shop",
                 "label": "Shop",
                 "href": "shop/",
-                "target": "_top"
+                "target": "_top",
+                "theme": [
+                    "ALL"
+                ],
+                "visibility": "ALL"
             },
             {
                 "name": "about",
                 "label": "About",
                 "href": "pages/about-us/",
-                "target": "_top"
+                "target": "_top",
+                "theme": [
+                    "ALL"
+                ],
+                "visibility": "ALL"
             },
             {
                 "name": "visit-us",
                 "label": "Visit Us",
                 "href": "pages/visit-us/",
-                "target": "_top"
+                "target": "_top",
+                "theme": [
+                    "ALL"
+                ],
+                "visibility": "ALL"
             }
         ],
         "open_menu": [
@@ -182,19 +202,41 @@
                 "name": "home",
                 "label": "Home",
                 "href": "/",
-                "target": "_top"
+                "target": "_top",
+                "theme": [
+                    "ALL"
+                ],
+                "visibility": "ALL"
             },
             {
                 "name": "about-us",
                 "label": "About Us",
                 "href": "pages/about-us/",
-                "target": "_top"
+                "target": "_top",
+                "theme": [
+                    "ALL"
+                ],
+                "visibility": "ALL"
             },
             {
                 "name": "visit-us",
                 "label": "Visit Us",
                 "href": "pages/visit-us/",
-                "target": "_top"
+                "target": "_top",
+                "theme": [
+                    "ALL"
+                ],
+                "visibility": "ALL"
+            },
+            {
+                "name": "menu",
+                "label": "Menu",
+                "href": "menu/",
+                "target": "_top",
+                "theme": [
+                    "ALL"
+                ],
+                "visibility": "MOBILE_ONLY"
             }
         ]
     }

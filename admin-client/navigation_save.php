@@ -15,12 +15,17 @@ foreach ($sections as $section) {
     $names = $sectionRows['name'] ?? [];
     $labels = $sectionRows['label'] ?? [];
     $hrefs = $sectionRows['href'] ?? [];
+    $themes = $sectionRows['theme'] ?? [];
+    $visibilityOptions = $sectionRows['visibility'] ?? [];
     $targets = $sectionRows['target'] ?? [];
-    $count = max(count($names), count($labels), count($hrefs), count($targets));
+    $count = max(count($names), count($labels), count($hrefs), count($themes), count($visibilityOptions), count($targets));
     for ($i = 0; $i < $count; $i++) {
         $label = trim((string) ($labels[$i] ?? ''));
         $href = trim((string) ($hrefs[$i] ?? ''));
         $name = adminClientFriendlyName($names[$i] ?? $label);
+        $themeSelection = $themes[$i] ?? ['ALL'];
+        $themeSelection = adminClientNormalizeFrontendNavigationThemes($themeSelection);
+        $visibility = adminClientNormalizeFrontendNavigationVisibility($visibilityOptions[$i] ?? 'ALL');
         $target = trim((string) ($targets[$i] ?? '_top'));
         $target = in_array($target, ['_blank', '_top'], true) ? $target : '_top';
         if ($label === '' || $href === '') { continue; }
@@ -29,6 +34,8 @@ foreach ($sections as $section) {
             'label' => $label,
             'href' => $href,
             'target' => $target,
+            'theme' => $themeSelection,
+            'visibility' => $visibility,
         ];
     }
 }

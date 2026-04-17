@@ -215,6 +215,8 @@ function adminClientNormalizeFrontendNavigationItems($items) {
         $name = adminClientFriendlyName($item['name'] ?? $label);
         $target = trim((string) ($item['target'] ?? '_top'));
         $target = in_array($target, ['_blank', '_top'], true) ? $target : '_top';
+        $themes = adminClientNormalizeFrontendNavigationThemes($item['theme'] ?? 'ALL');
+        $visibility = adminClientNormalizeFrontendNavigationVisibility($item['visibility'] ?? 'ALL');
         if ($label === '' || $href === '') {
             continue;
         }
@@ -224,10 +226,79 @@ function adminClientNormalizeFrontendNavigationItems($items) {
             'label' => $label,
             'href' => $href,
             'target' => $target,
+            'theme' => $themes,
+            'visibility' => $visibility,
         ];
     }
 
     return $normalized;
+}
+
+function adminClientNormalizeFrontendNavigationThemes($themes) {
+    if (!is_array($themes)) {
+        $themes = [$themes];
+    }
+
+    $normalized = [];
+    foreach ($themes as $theme) {
+        $theme = trim((string) $theme);
+        if ($theme === '') {
+            continue;
+        }
+
+        if (strtoupper($theme) === 'ALL') {
+            return ['ALL'];
+        }
+
+        $normalizedTheme = adminClientNormalizeThemeName($theme);
+        if ($normalizedTheme !== '') {
+            $normalized[] = $normalizedTheme;
+        }
+    }
+
+    $normalized = array_values(array_unique($normalized));
+    return !empty($normalized) ? $normalized : ['ALL'];
+}
+
+function adminClientAllowedNavigationVisibility() {
+    return ['ALL', 'DESKTOP_ONLY', 'MOBILE_ONLY'];
+}
+
+function adminClientNormalizeFrontendNavigationVisibility($visibility) {
+    $visibility = strtoupper(trim((string) $visibility));
+    return in_array($visibility, adminClientAllowedNavigationVisibility(), true) ? $visibility : 'ALL';
+}
+
+function adminClientNavigationVisibilityClass($item) {
+    $visibility = adminClientNormalizeFrontendNavigationVisibility($item['visibility'] ?? 'ALL');
+
+    if ($visibility === 'DESKTOP_ONLY') {
+        return 'hide-on-med-and-down';
+    }
+
+    if ($visibility === 'MOBILE_ONLY') {
+        return 'hide-on-large-only hide-on-extra-large-only';
+    }
+
+    return '';
+}
+
+function adminClientFilterFrontendNavigationItemsByTheme($items, $themeName) {
+    $themeName = adminClientNormalizeThemeName($themeName);
+    $filtered = [];
+
+    foreach ((array) $items as $item) {
+        if (!is_array($item)) {
+            continue;
+        }
+
+        $itemThemes = adminClientNormalizeFrontendNavigationThemes($item['theme'] ?? 'ALL');
+        if (in_array('ALL', $itemThemes, true) || in_array($themeName, $itemThemes, true)) {
+            $filtered[] = $item;
+        }
+    }
+
+    return $filtered;
 }
 
 function adminClientNormalizeFrontendNavigation($navigation, $defaults) {

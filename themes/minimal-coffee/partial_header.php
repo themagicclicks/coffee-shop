@@ -55,6 +55,7 @@
                     $href = (string) ($navItem['href'] ?? '');
                     $isAbsolute = preg_match('#^(https?:)?//#i', $href) === 1;
                     $resolvedHref = $isAbsolute ? $href : SITE . ltrim($href, '/');
+                    $visibilityClass = adminClientNavigationVisibilityClass($navItem);
                     $path = trim((string) (parse_url($href, PHP_URL_PATH) ?? $href), '/');
                     $segments = $path === '' ? [] : explode('/', $path);
                     $isCurrent = false;
@@ -67,7 +68,7 @@
                         $isCurrent = ($currentEntityType === $segments[0] && $currentEntityName === ($segments[1] ?? ''));
                     }
                 ?>
-                    <li>
+                    <li class="<?php echo htmlspecialchars($visibilityClass, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
                         <a
                             class="<?php echo $class; ?><?php echo $isCurrent ? ' is-current' : ''; ?>"
                             href="<?php echo htmlspecialchars($resolvedHref, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>"
@@ -91,12 +92,13 @@
 
     <div class="open-menu minimal-open-menu">
         <img src="<?php echo SITE; ?>images/willow-cup-coffee-black.svg" alt="Willow Cup Coffee">
-        <?php foreach ($topNavItems as $navItem) {
+        <?php foreach ($openMenuItems as $navItem) {
             $href = (string) ($navItem['href'] ?? '');
             $isAbsolute = preg_match('#^(https?:)?//#i', $href) === 1;
             $resolvedHref = $isAbsolute ? $href : SITE . ltrim($href, '/');
+            $visibilityClass = adminClientNavigationVisibilityClass($navItem);
         ?>
-            <a href="<?php echo htmlspecialchars($resolvedHref, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" target="<?php echo htmlspecialchars((string) ($navItem['target'] ?? '_top'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>"><?php echo htmlspecialchars((string) ($navItem['label'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></a>
+            <a class="<?php echo htmlspecialchars($visibilityClass, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" href="<?php echo htmlspecialchars($resolvedHref, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" target="<?php echo htmlspecialchars((string) ($navItem['target'] ?? '_top'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>"><?php echo htmlspecialchars((string) ($navItem['label'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></a>
         <?php } ?>
     </div>
 

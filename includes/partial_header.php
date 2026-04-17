@@ -55,8 +55,9 @@
                     $href = (string) ($navItem['href'] ?? '');
                     $isAbsolute = preg_match('#^(https?:)?//#i', $href) === 1;
                     $resolvedHref = $isAbsolute ? $href : SITE . ltrim($href, '/');
+                    $visibilityClass = adminClientNavigationVisibilityClass($navItem);
                 ?>
-                    <li><a class="<?php echo $class; ?>" href="<?php echo htmlspecialchars($resolvedHref, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" target="<?php echo htmlspecialchars((string) ($navItem['target'] ?? '_top'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>"><?php echo htmlspecialchars((string) ($navItem['label'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></a></li>
+                    <li class="<?php echo htmlspecialchars($visibilityClass, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>"><a class="<?php echo $class; ?>" href="<?php echo htmlspecialchars($resolvedHref, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" target="<?php echo htmlspecialchars((string) ($navItem['target'] ?? '_top'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>"><?php echo htmlspecialchars((string) ($navItem['label'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></a></li>
                 <?php } ?>
             </ul>
 
@@ -76,8 +77,9 @@
             $href = (string) ($navItem['href'] ?? '');
             $isAbsolute = preg_match('#^(https?:)?//#i', $href) === 1;
             $resolvedHref = $isAbsolute ? $href : SITE . ltrim($href, '/');
+            $visibilityClass = adminClientNavigationVisibilityClass($navItem);
         ?>
-            <a href="<?php echo htmlspecialchars($resolvedHref, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" target="<?php echo htmlspecialchars((string) ($navItem['target'] ?? '_top'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>"><?php echo htmlspecialchars((string) ($navItem['label'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></a>
+            <a class="<?php echo htmlspecialchars($visibilityClass, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" href="<?php echo htmlspecialchars($resolvedHref, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" target="<?php echo htmlspecialchars((string) ($navItem['target'] ?? '_top'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>"><?php echo htmlspecialchars((string) ($navItem['label'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></a>
         <?php } ?>
 
     </div>
