@@ -27,8 +27,110 @@ function buildEntityAttributeNameMap($attributeIds) {
     return $attributeNames;
 }
 
+function normalizeEntityTypeUrlToken($value, $separator = '_') {
+    $value = strtolower(trim((string) $value));
+    $value = preg_replace('/[^a-z0-9]+/', $separator, $value);
+    return trim((string) $value, $separator);
+}
+
+function getEntityTypeUrlPlaceholderKeys($entityTypeName) {
+    $entityTypeName = strtolower(trim((string) $entityTypeName));
+    if ($entityTypeName === '') {
+        return ['entity_url'];
+    }
+
+    $keys = [
+        'entity_url',
+        $entityTypeName . '_url',
+        normalizeEntityTypeUrlToken($entityTypeName, '_') . '_url',
+        normalizeEntityTypeUrlToken($entityTypeName, '-') . '_url',
+    ];
+
+    return array_values(array_unique(array_filter($keys)));
+}
+
+function buildEntityFrontendUrl($entityTypeName, $entityName) {
+    $entityTypeName = trim((string) $entityTypeName);
+    $entityName = trim((string) $entityName);
+
+    if ($entityTypeName === '' || $entityName === '') {
+        return '';
+    }
+
+    return SITE . rawurlencode($entityTypeName) . '/' . rawurlencode($entityName);
+}
+
+function applyEntityTypeUrlPlaceholders($html, $entityTypeName, $entityName) {
+    $entityUrl = buildEntityFrontendUrl($entityTypeName, $entityName);
+    if ($entityUrl === '') {
+        return $html;
+    }
+
+    foreach (getEntityTypeUrlPlaceholderKeys($entityTypeName) as $placeholderKey) {
+        $html = str_replace('{' . $placeholderKey . '}', $entityUrl, $html);
+    }
+
+    return $html;
+}
+
+function applyDefaultEntityLinkHref($html, $entityTypeName, $entityName) {
+    $entityUrl = buildEntityFrontendUrl($entityTypeName, $entityName);
+    if ($entityUrl === '') {
+        return $html;
+    }
+
+    return preg_replace_callback('/<a\b[^>]*>/i', function ($matches) use ($entityUrl) {
+        $anchorHtml = $matches[0];
+
+        if (stripos($anchorHtml, 'data-id=') === false) {
+            return $anchorHtml;
+        }
+
+        if (preg_match('/\bhref\s*=\s*([\'"])\s*\1/i', $anchorHtml)) {
+            return preg_replace('/\bhref\s*=\s*([\'"])\s*\1/i', 'href="$entityUrl"', $anchorHtml, 1);
+        }
+
+        return $anchorHtml;
+    }, $html);
+}
+
+function normalizeEntityThemeSelectionValue($value) {
+    $value = strtolower(trim((string) $value));
+    return preg_replace('/[^a-z0-9\-_]/', '', $value);
+}
+
+function entityThemeSelectionAllowsCurrentTheme($value, $activeTheme = null) {
+    $activeTheme = $activeTheme ?: getActiveThemeName();
+    $activeTheme = normalizeEntityThemeSelectionValue($activeTheme);
+    $selectedTheme = normalizeEntityThemeSelectionValue($value);
+
+    if ($selectedTheme === '' || $selectedTheme === 'all') {
+        return true;
+    }
+
+    return $selectedTheme === $activeTheme;
+}
+
+function entityDataMatchesCurrentTheme($entityData, $activeTheme = null) {
+    if (!is_array($entityData)) {
+        return true;
+    }
+
+    foreach (($entityData['attributes'] ?? []) as $attribute) {
+        $attributeName = strtolower(trim((string) ($attribute['name'] ?? '')));
+        if ($attributeName !== 'select_theme') {
+            continue;
+        }
+
+        return entityThemeSelectionAllowsCurrentTheme($attribute['value'] ?? '', $activeTheme);
+    }
+
+    return true;
+}
+
 function buildRenderedEntitiesForTypes($types, $filterBy = '') {
     $finalEntities = [];
+    $activeTheme = getActiveThemeName();
 
     foreach ($types as $typeRow) {
         $entityTypeId = $typeRow['id'];
@@ -53,9 +155,13 @@ function buildRenderedEntitiesForTypes($types, $filterBy = '') {
                 $attrName = $attributeNames[$attr['attribute_id']] ?? 'unknown';
                 $attrMap[$attrName] = $attr['value'];
             }
-			$attrMap['id'] = $entity['id'];
+            $attrMap['id'] = $entity['id'];
             $attrMap['name'] = $entity['name'];
             $attrMap['entity_type'] = $typeTitle;
+
+            if (!entityThemeSelectionAllowsCurrentTheme($attrMap['select_theme'] ?? '', $activeTheme)) {
+                continue;
+            }
 
             if ($filterBy && (!isset($attrMap[$filterBy]) || $attrMap[$filterBy] !== 'on')) {
                 continue;
@@ -70,9 +176,8 @@ function buildRenderedEntitiesForTypes($types, $filterBy = '') {
                 );
             }
 
-            $entityurl = SITE . $typeName . "/" . $entity['name'];
-            $filledTemplate = str_replace('{branded_product_url}', $entityurl, $filledTemplate);
-            $filledTemplate = str_replace('{unbranded_product_url}', $entityurl, $filledTemplate);
+            $filledTemplate = applyEntityTypeUrlPlaceholders($filledTemplate, $typeName, $entity['name']);
+            $filledTemplate = applyDefaultEntityLinkHref($filledTemplate, $typeName, $entity['name']);
 
             $finalEntities[] = [
                 'id' => $entity['id'],
@@ -199,6 +304,15 @@ function renderEntityTemplateWithStack($entityData, $processingStack) {
         $html = str_replace('{' . $key . '}', $value, $html);
     }
 
+    $entityTypeName = '';
+    $entityTypeId = (int) ($entityData['entity']['entity_type_id'] ?? 0);
+    if ($entityTypeId > 0) {
+        $entityTypeRows = getEntityType($entityTypeId);
+        $entityTypeName = (string) ($entityTypeRows[0]['name'] ?? '');
+    }
+    $html = applyEntityTypeUrlPlaceholders($html, $entityTypeName, $entityData['entity']['name'] ?? '');
+    $html = applyDefaultEntityLinkHref($html, $entityTypeName, $entityData['entity']['name'] ?? '');
+
     $attributesList = '';
     foreach ($entityData['attributes'] as $attribute) {
         $val = $attribute['value'];
@@ -225,10 +339,11 @@ function replaceCurrentPageUrl($html) {
 
 function processEmbeddedEntities($template, $processingStack = []) {
     $previousTemplate = null;
+    $activeTheme = getActiveThemeName();
 
     do {
         $previousTemplate = $template;
-        $template = preg_replace_callback('/{{entity type="([^"]+)" name="([^"]+)"(?: template-type="([^"]+)")?}}/', function ($matches) use ($processingStack) {
+        $template = preg_replace_callback('/{{entity type="([^"]+)" name="([^"]+)"(?: template-type="([^"]+)")?}}/', function ($matches) use ($processingStack, $activeTheme) {
             $embeddedType = $matches[1];
             $embeddedName = $matches[2];
             $templateType = isset($matches[3]) ? $matches[3] : 'main';
@@ -242,7 +357,7 @@ function processEmbeddedEntities($template, $processingStack = []) {
             $newStack[] = $uniqueKey;
 
             $embeddedEntity = getMatchingEntity($embeddedName, 0, 0, $embeddedType);
-            if (!empty($embeddedEntity)) {
+            if (!empty($embeddedEntity) && !isset($embeddedEntity['error']) && entityDataMatchesCurrentTheme($embeddedEntity, $activeTheme)) {
                 return ($templateType === 'preview_html_template')
                     ? renderEntityPreviewTemplate($embeddedEntity, $newStack)
                     : renderEntityTemplateWithStack($embeddedEntity, $newStack);
@@ -280,6 +395,14 @@ function renderEntityPreviewTemplate($entityData, $processingStack = []) {
     }
 
     $renderedHtml = str_replace('{{attributes_list}}', $attributesHtml, $renderedHtml);
+    $entityTypeName = '';
+    $entityTypeId = (int) ($entityData['entity']['entity_type_id'] ?? 0);
+    if ($entityTypeId > 0) {
+        $entityTypeRows = getEntityType($entityTypeId);
+        $entityTypeName = (string) ($entityTypeRows[0]['name'] ?? '');
+    }
+    $renderedHtml = applyEntityTypeUrlPlaceholders($renderedHtml, $entityTypeName, $entityData['entity']['name'] ?? '');
+    $renderedHtml = applyDefaultEntityLinkHref($renderedHtml, $entityTypeName, $entityData['entity']['name'] ?? '');
     return processEmbeddedEntities(htmlspecialchars_decode($renderedHtml), $processingStack);
 }
 
@@ -385,6 +508,7 @@ function humanizeEntitySlug($value) {
 function getPrintableMenuSections() {
     $sections = [];
     $types = getEntityTypesByPattern('menu-%-drink');
+    $activeTheme = getActiveThemeName();
 
     foreach ($types as $typeRow) {
         $entityTypeId = (int) ($typeRow['id'] ?? 0);
@@ -412,6 +536,10 @@ function getPrintableMenuSections() {
                 if ($attrName !== '') {
                     $attributeMap[$attrName] = (string) ($attr['value'] ?? '');
                 }
+            }
+
+            if (!entityThemeSelectionAllowsCurrentTheme($attributeMap['select_theme'] ?? '', $activeTheme)) {
+                continue;
             }
 
             $itemTitle = trim((string) ($attributeMap['title'] ?? ''));

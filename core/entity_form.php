@@ -122,13 +122,28 @@ function entityFormApplyTemplateState($templateHtml, $fieldName, $fieldId, $rawV
     }
 
     $xpath = new DOMXPath($dom);
+    $primaryControl = null;
+    foreach ($xpath->query('.//select | .//textarea | .//input[not(@type="hidden")]', $wrapper) as $candidateControl) {
+        $primaryControl = $candidateControl;
+        break;
+    }
+
+    if ($primaryControl instanceof DOMElement) {
+        $primaryControl->setAttribute('name', $fieldName);
+        $primaryControl->setAttribute('id', $fieldId);
+    }
+
     foreach ($xpath->query('.//*[@id or @name or contains(@class, "pell")]', $wrapper) as $element) {
         if ($element->hasAttribute('id') && $element->getAttribute('id') === $fieldName) {
             $element->setAttribute('id', $fieldId);
         }
 
-        if ($element->hasAttribute('name') && $element->getAttribute('name') === $fieldName) {
+        if ($element->hasAttribute('name') && ($element->getAttribute('name') === $fieldName || ($primaryControl instanceof DOMNode && $element->isSameNode($primaryControl)))) {
             $element->setAttribute('name', $fieldName);
+        }
+
+        if ($element->hasAttribute('id') && $primaryControl instanceof DOMNode && $element->isSameNode($primaryControl)) {
+            $element->setAttribute('id', $fieldId);
         }
 
         $className = ' ' . $element->getAttribute('class') . ' ';

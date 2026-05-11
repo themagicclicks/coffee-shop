@@ -2,6 +2,7 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+ob_start();
 // Include database connection & functions
 require_once __DIR__ . '/core/env.php';
 loadEnv(__DIR__ . '/.env');
@@ -60,18 +61,20 @@ if (!empty($entityName)) {
     //echo "</pre>";
     //exit;
     // Check for errors
-    if (isset($entityData['error'])) {
+    if (isset($entityData['error']) || !entityDataMatchesCurrentTheme($entityData)) {
         http_response_code(404);
         //echo json_encode($entityData);
 		echo renderPageSnippet("home-page-captions");
         echo $notfound;
+        include_once BASE.'includes/footer.php';
+        exit;
     }
     $entitiesBlock = '';
     //if($entityName == 'home'){
         //a little change here, earlier only one entity type was picked
         //now we can think of picking up several with a similar naming pattern like "menu-" at the beginning and check for is_featured or similar boolean field
         $entitiesBlock1 = matchingEntitiesBlock('menu-','-drink','is_featured');
-        $entitiesBlock2 = matchingEntitiesBlock('shop-','-sell','is_featured','shopproducts');
+        $entitiesBlock2 = matchingEntitiesBlock('shop','','is_featured','shopproducts');
         $entitiesBlock3 = matchingEntitiesBlock('customer-','-grid','is_featured');
         $entitiesBlock4 = matchingEntitiesBlock('cafe-','-list','is_featured');
    
@@ -137,6 +140,7 @@ if (!empty($entityName)) {
 }
 
 include_once BASE.'includes/footer.php';
+ob_end_flush();
 ?>
 
 
